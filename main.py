@@ -66,9 +66,51 @@ clock = pygame.time.Clock()
 MenuInicioPresionado=False
 ManteniendoApretado=False
 
+class Window:
+    def __init__(self, x, y, w, h, title=''):
+        self.x = x
+        self.y = y
+        self.color = BarraDeTareas
+        self.black = color_negro
+        self.white = color_blanco
+        self.blue = "#0000FF"
+        
+        self.title = title
+
+        # Main Window
+        self.window = pygame.Rect(x, y+32, w, h)
+
+        # Frame Decorations
+        self.frame2 = pygame.Rect(x-2, y-2, w+4, h+36)
+        self.frame1 = pygame.Rect(x-2, y-2, w+2, h+34)
+
+        # Title Bar
+        self.barShade = pygame.Rect(x, y+3, w, 32)
+        self.bar = pygame.Rect(x, y, w, 32)
+        
+
+    def open(self, screen):
+        # Frame Decorations
+        pygame.draw.rect(screen, self.black, self.frame2)
+        pygame.draw.rect(screen, self.white, self.frame1)
+        
+        # Main Window
+        pygame.draw.rect(screen, self.color, self.window)
+
+        # Title Bar
+        pygame.draw.rect(screen, self.black , self.barShade)
+        pygame.draw.rect(screen, self.blue, self.bar)
+        
+
+        TextObject(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, position=(self.x+3,self.y+3), window=ventana, bold=True)
+        return True
+
+VentanaPrueba=Window(Width/4, Height/4, 200, 200, "Caca")
+
 class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
+        # Main
         self.rect = pygame.Rect(x, y, w, h)
         self.color = COLOR_INACTIVE
         self.text = text
@@ -85,6 +127,7 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
@@ -106,7 +149,7 @@ class InputBox:
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
-        pg.draw.rect(screen, self.color, self.rect, 2)
+        pygame.draw.rect(screen, self.color, self.rect, 2)
 
 while True: 
       
@@ -126,7 +169,6 @@ while True:
         
         if event.type == pygame.MOUSEBUTTONUP:
             
-
             if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40 and ManteniendoApretado == True and MenuInicioPresionado == False: 
                 MenuInicioPresionado=True
                 ManteniendoApretado=False
@@ -172,6 +214,8 @@ while True:
     # if mouse is hovered on a button it 
     # changes to lighter shade  
 
+    VentanaPrueba.open(ventana)
+
     # Button 
     #if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40:
     if MenuInicioPresionado == True or ManteniendoApretado == True:
@@ -193,4 +237,5 @@ while True:
     TextObject(size=normalfontsize, text="3:00 AM", color=color_negro, font=normalfontstyle, position=(700,562), window=ventana)
       
     # updates the frames of the game 
+    clock.tick(60)
     pygame.display.update() 
