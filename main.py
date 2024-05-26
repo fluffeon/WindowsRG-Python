@@ -15,6 +15,10 @@ Height=600
 ventana = pygame.display.set_mode((Width,Height))
 pygame.display.set_caption('Windows RG Build 207')
 
+gameEvents={
+    "myDocumentsOpen": True
+}
+
 # white color 
 color_blanco = (255,255,255) 
   
@@ -130,7 +134,7 @@ class Window:
         TextObject(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, position=(self.x+4,self.y+4), window=ventana, bold=True)
         return True
 
-    def handle_event(self, event):
+    def isOpened(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.closeButton.collidepoint(event.pos):
@@ -141,14 +145,16 @@ class Window:
         if event.type == pygame.MOUSEBUTTONUP:
             if self.closeButtonHeld == True and self.closeButton.collidepoint(event.pos):
                 self.closeButtonPressed = True
-                self.closeButtonHeld = False           
+                self.closeButtonHeld = False
             else:
                 self.closeButtonPressed = False
                 self.closeButtonHeld = False
 
         if self.closeButtonPressed == True:
-            print("Cerrar")
             self.closeButtonPressed = False
+            return False
+        else:
+            return True
 
 
 VentanaPrueba=Window(10, 10, Width-20, Height-105, "My Documents")
@@ -222,12 +228,14 @@ while True:
                 MenuInicioPresionado=False
                 ManteniendoApretado=False
 
-        VentanaPrueba.handle_event(event)
+        if VentanaPrueba.isOpened(event) == False:
+            gameEvents['myDocumentsOpen'] = False
 
     # fills the screen with a color 
     ventana.fill(Fondo) 
 
-    VentanaPrueba.open(ventana)
+    if gameEvents['myDocumentsOpen'] == True:
+        VentanaPrueba.open(ventana)
 
     if MenuInicioPresionado == True:
         # Geometria del Menu de Inicio
