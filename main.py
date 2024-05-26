@@ -67,9 +67,15 @@ MenuInicioPresionado=False
 ManteniendoApretado=False
 
 class Window:
+
+    closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-15)
+    closeTexttoBlit=closeText.render("X", True, color_negro)
+
     def __init__(self, x, y, w, h, title=''):
         self.x = x
         self.y = y
+        self.w = w
+        self.h = h
         self.color = BarraDeTareas
         self.black = color_negro
         self.white = color_blanco
@@ -87,6 +93,15 @@ class Window:
         # Title Bar
         self.barShade = pygame.Rect(x, y+3, w, 32)
         self.bar = pygame.Rect(x, y, w, 32)
+
+        # Close Button
+        self.closeButtonShade1 = pygame.Rect(x+w-32, y+4, 30, 28)
+        self.closeButtonShade2 = pygame.Rect(x+w-32, y+2, 28, 28)
+
+        self.closeButton = pygame.Rect(x+w-30, y+4, 26, 26)
+
+        self.closeButtonHeld = False
+        self.closeButtonPressed = False
         
 
     def open(self, screen):
@@ -100,12 +115,43 @@ class Window:
         # Title Bar
         pygame.draw.rect(screen, self.black , self.barShade)
         pygame.draw.rect(screen, self.blue, self.bar)
-        
 
-        TextObject(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, position=(self.x+3,self.y+3), window=ventana, bold=True)
+        # Close Button
+        if self.closeButtonHeld == False:
+            pygame.draw.rect(screen, self.black, self.closeButtonShade1)
+            pygame.draw.rect(screen, self.white, self.closeButtonShade2)
+        else:
+            pygame.draw.rect(screen, self.white, self.closeButtonShade1)
+            pygame.draw.rect(screen, self.black, self.closeButtonShade2)
+        pygame.draw.rect(screen, self.color, self.closeButton)
+
+        ventana.blit(self.closeTexttoBlit, (self.x+self.w-27, self.y+1)) 
+        
+        TextObject(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, position=(self.x+4,self.y+4), window=ventana, bold=True)
         return True
 
-VentanaPrueba=Window(Width/4, Height/4, 200, 200, "Caca")
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.closeButton.collidepoint(event.pos):
+                self.closeButtonHeld = True
+            else:
+                self.closeButtonHeld = False
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if self.closeButtonHeld == True and self.closeButton.collidepoint(event.pos):
+                self.closeButtonPressed = True
+                self.closeButtonHeld = False           
+            else:
+                self.closeButtonPressed = False
+                self.closeButtonHeld = False
+
+        if self.closeButtonPressed == True:
+            print("Cerrar")
+            self.closeButtonPressed = False
+
+
+VentanaPrueba=Window(10, 10, Width-20, Height-105, "My Documents")
 
 class InputBox:
 
@@ -176,8 +222,12 @@ while True:
                 MenuInicioPresionado=False
                 ManteniendoApretado=False
 
+        VentanaPrueba.handle_event(event)
+
     # fills the screen with a color 
     ventana.fill(Fondo) 
+
+    VentanaPrueba.open(ventana)
 
     if MenuInicioPresionado == True:
         # Geometria del Menu de Inicio
@@ -213,8 +263,6 @@ while True:
 
     # if mouse is hovered on a button it 
     # changes to lighter shade  
-
-    VentanaPrueba.open(ventana)
 
     # Button 
     #if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40:
