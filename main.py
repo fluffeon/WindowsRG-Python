@@ -1,4 +1,5 @@
 import pygame
+from time import sleep
 from sys import platform
 
 # Windows RG Build 204 recreated in Python
@@ -8,10 +9,10 @@ pygame.init()
 
 Fondo=(0,153,255)
 BarraDeTareas=(204,204,204)
-Ancho=800
-Alto=600
+Width=800
+Height=600
 
-ventana = pygame.display.set_mode((Ancho,Alto))
+ventana = pygame.display.set_mode((Width,Height))
 pygame.display.set_caption('Windows RG Build 207')
 
 # white color 
@@ -24,16 +25,8 @@ color_light = (170,170,170)
 color_dark = (100,100,100) 
 
 color_negro = (0,0,0)
-  
-# stores the width of the 
-# screen into a variable 
-width = ventana.get_width() 
-  
-# stores the height of the 
-# screen into a variable 
-height = ventana.get_height() 
-  
-# defining a font 
+
+StartingPosition2=145
 
 MenuOptions=['Word', 'Windows Update', 'Crash', 'Solitaire', 'Order Food', 'Go Online', 'Paint', 'Help', 'Reboot', 'Shut Down']
   
@@ -89,11 +82,10 @@ while True:
                     ManteniendoApretado=True
         
         if event.type == pygame.MOUSEBUTTONUP:
-            if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40 and ManteniendoApretado == True: 
-                if MenuInicioPresionado == False:
-                    MenuInicioPresionado=True
-                else:
-                    MenuInicioPresionado=False
+            
+
+            if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40 and ManteniendoApretado == True and MenuInicioPresionado == False: 
+                MenuInicioPresionado=True
                 ManteniendoApretado=False
             else:
                 MenuInicioPresionado=False
@@ -104,19 +96,29 @@ while True:
 
     if MenuInicioPresionado == True:
         # Geometria del Menu de Inicio
-        pygame.draw.rect(ventana,color_blanco,(0, 145, 352, 402))
-        pygame.draw.rect(ventana,color_negro,(2, 145, 352, 404))
-        pygame.draw.rect(ventana,BarraDeTareas,(2, 145, 350, 400))
+        pygame.draw.rect(ventana,color_blanco,(0, 145, 354, 437))
+        pygame.draw.rect(ventana,color_negro,(4, 145, 352, 437))
+        pygame.draw.rect(ventana,BarraDeTareas,(2, 145, 352, 400))
+
+
+        for a in range(145,545,40):
+            if 2 <= mouse[0] <= 352 and 140 <= mouse[1] <= a+40: 
+                pygame.draw.rect(ventana,color_blanco,(2, a, 352, 40))
+                break
 
         # Botones
-        pygame.draw.rect(ventana,color_blanco,(2, 145, 350, 50))
+        #pygame.draw.rect(ventana,color_blanco,(2, StartingPosition2, 352, 40))
+        StartingPosition2+=40
+        if StartingPosition2 == 545:
+            StartingPosition2=145
+        
 
         # Opciones
         StartingPosition=145
         for i in range(len(MenuOptions)):
             if i != 0:
                 StartingPosition+=40
-            TextObject(size=bigfontsize-4, text=str(MenuOptions[i]), color=color_negro, font=normalfontstyle, position=(60,StartingPosition), window=ventana)
+            TextObject(size=bigfontsize-8, text=str(MenuOptions[i]), color=color_negro, font=normalfontstyle, position=(60,StartingPosition), window=ventana)
       
     # stores the (x,y) coordinates into 
     # the variable as a tuple 
