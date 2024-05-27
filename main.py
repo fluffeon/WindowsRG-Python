@@ -210,6 +210,9 @@ class Window:
         if self.closeButtonPressed == True:
             self.closed = True
             self.closeButtonPressed = False
+        
+    def windowTitle(self):
+        return self.title
 
     def checkIfOpen(self):
         if self.closed == True:
@@ -419,17 +422,19 @@ class InputBox:
 print(button)
 while True: 
 
-    for windowObject in window:
-        if window[windowObject].checkIfOpen() == 'Open':
+    for windowInParticular in window:
+        if window[windowInParticular].checkIfOpen():
             gameEvent['windowCurrentlyOpen'] = True
             break
         gameEvent['windowCurrentlyOpen'] = False
 
     WindowsRG.fill(Fondo) 
 
+    """
     button['BotonPrueba'].show()
     button['BotonPrueba2'].show()
     button['BotonPrueba3'].show()
+    """
     
     if gameEvent['windowCurrentlyOpen'] == False:
         button['MyComputerButton'].show()
