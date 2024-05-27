@@ -346,7 +346,22 @@ class InputBox:
 bigWindow=Window(10, 10, Width-20, Height-105, WindowsRG, "My Documents")
 
 while True: 
-      
+
+    WindowsRG.fill(Fondo) 
+    
+    WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
+    GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
+
+    WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
+    GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
+
+    WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
+    GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
+
+    WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
+    GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
+    GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
+
     for event in pygame.event.get(): 
           
         if event.type == pygame.QUIT: 
@@ -368,9 +383,6 @@ while True:
         BotonPrueba3.checkPress(event)
         StartButton.checkPress(event)
 
-    # fills the screen with a color 
-    WindowsRG.fill(Fondo) 
-
     if gameEvents['myDocumentsOpen'] == True:
         bigWindow.open()
       
@@ -390,24 +402,17 @@ while True:
 
     if gameEvents['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
-        pygame.draw.rect(WindowsRG,color_blanco,(0, 145, 356, 402))
-        pygame.draw.rect(WindowsRG,color_negro,(2, 145, 354, 402))
-        pygame.draw.rect(WindowsRG,BarraDeTareas,(2, 145, 352, 400))
+        pygame.draw.rect(WindowsRG,color_blanco,(0, 157, 356, 402))
+        pygame.draw.rect(WindowsRG,color_negro,(2, 157, 354, 402))
+        pygame.draw.rect(WindowsRG,BarraDeTareas,(2, 157, 352, 400))
 
-        for a in range(145,545,40):
+        for a in range(157,557,40):
             if 2 <= mouse[0] <= 352 and 140 <= mouse[1] <= a+40: 
-                pygame.draw.rect(WindowsRG,color_blanco,(2, a, 352, 40))
-                break
-
-        # Botones
-        #pygame.draw.rect(ventana,color_blanco,(2, StartingPosition2, 352, 40))
-        StartingPosition2+=40
-        if StartingPosition2 == 545:
-            StartingPosition2=145
-        
+                pygame.draw.rect(WindowsRG,(BarraDeTareas[0]-50, BarraDeTareas[1]-50, BarraDeTareas[2]-50),(2, a, 352, 40))
+                break        
 
         # Opciones
-        StartingPosition=145
+        StartingPosition=157
         for i in range(len(MenuOptions)):
             if i != 0:
                 StartingPosition+=40
@@ -421,19 +426,6 @@ while True:
 
     # Hour
     GenerateText(size=normalfontsize, text="3:00 AM", color=color_negro, font=normalfontstyle, x=700, y=562, window=WindowsRG)
-
-    WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
-    GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
-
-    WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
-    GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
-
-    WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
-    GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
-
-    WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
-    GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
-    GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
     
       
     # updates the frames of the game 
