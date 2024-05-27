@@ -164,7 +164,7 @@ class Window:
         if len(title) != 0:
             self.title = title
     
-    def show(self):
+    def render(self):
         if self.closed == False:
             # Frame Decorations
             pygame.draw.rect(self.screen, self.black, self.frame2)
@@ -247,6 +247,7 @@ class Button:
             self.buttonToggle = None
 
         self.label = label
+        self.buttonHidden = False
 
         self.fontstyle=pygame.font.SysFont(normalfontstyle,25)
         self.actualtext=self.fontstyle.render(label, True, self.textColor)
@@ -274,77 +275,87 @@ class Button:
         self.buttonHeld = False
         self.buttonPressed = False
     
-    def show(self):
-        if self.holdButtonifPressed == True and self.shading == True:
-            if self.buttonHeld == True or self.buttonToggle == True:
-                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
-            elif self.buttonPressed == False or self.buttonToggle == False:
-                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-        elif self.shading == True:
-            if self.buttonHeld == False:
-                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-            else:
-                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
+    def render(self):
+        if self.buttonHidden == False:
+            if self.holdButtonifPressed == True and self.shading == True:
+                if self.buttonHeld == True or self.buttonToggle == True:
+                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
+                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
+                elif self.buttonPressed == False or self.buttonToggle == False:
+                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
+            elif self.shading == True:
+                if self.buttonHeld == False:
+                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
+                else:
+                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
+                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
         
-        if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False:
-            pygame.draw.rect(self.screen, self.holdColor, self.button)
-        elif self.buttonHover == True and gameEvent['startMenuOpen'] == False:
-            pygame.draw.rect(self.screen, self.hoverColor, self.button)
-        else:
-            pygame.draw.rect(self.screen, self.color, self.button)
-        self.screen.blit(self.actualtext, self.text_rect)
+            if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False:
+                pygame.draw.rect(self.screen, self.holdColor, self.button)
+            elif self.buttonHover == True and gameEvent['startMenuOpen'] == False:
+                pygame.draw.rect(self.screen, self.hoverColor, self.button)
+            else:
+                pygame.draw.rect(self.screen, self.color, self.button)
+            self.screen.blit(self.actualtext, self.text_rect)
 
     def checkPress(self, event):
-        
-        if self.button.collidepoint(pygame.mouse.get_pos()):
-            self.buttonHover = True
-        else:
-            self.buttonHover = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.button.collidepoint(event.pos) and gameEvent['startMenuOpen'] == False and self.startButton == False:
-                self.buttonHeld = True
-            elif self.button.collidepoint(event.pos) and self.startButton == True:
-                self.buttonHeld = True
+        if self.buttonHidden == False:
+            if self.button.collidepoint(pygame.mouse.get_pos()):
+                self.buttonHover = True
             else:
-                self.buttonHeld = False
+                self.buttonHover = False
 
-        if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button.collidepoint(event.pos) and gameEvent['startMenuOpen'] == False and self.startButton == False:
+                    self.buttonHeld = True
+                elif self.button.collidepoint(event.pos) and self.startButton == True:
+                    self.buttonHeld = True
+                else:
+                    self.buttonHeld = False
 
-            if self.buttonHeld == True and self.button.collidepoint(event.pos):
-                self.buttonPressed = True
-                self.buttonHeld = False
-                if self.startButton == True:
-                    if gameEvent['startMenuOpen'] == False:
-                        self.buttonToggle = False
-                    else:
+            if event.type == pygame.MOUSEBUTTONUP:
+
+                if self.buttonHeld == True and self.button.collidepoint(event.pos):
+                    self.buttonPressed = True
+                    self.buttonHeld = False
+                    if self.startButton == True:
+                        if gameEvent['startMenuOpen'] == False:
+                            self.buttonToggle = False
+                        else:
+                            self.buttonToggle = True
+                    elif self.holdButtonifPressed == True and self.buttonToggle == False:
                         self.buttonToggle = True
-                elif self.holdButtonifPressed == True and self.buttonToggle == False:
-                    self.buttonToggle = True
-                elif self.holdButtonifPressed == True and self.buttonToggle == True:
-                    self.buttonToggle = False
-            else:
-                if self.startButton == True:
-                    if gameEvent['startMenuOpen'] == False:
+                    elif self.holdButtonifPressed == True and self.buttonToggle == True:
                         self.buttonToggle = False
-                    else:
-                        self.buttonToggle = True
+                else:
+                    if self.startButton == True:
+                        if gameEvent['startMenuOpen'] == False:
+                            self.buttonToggle = False
+                        else:
+                            self.buttonToggle = True
+                    self.buttonPressed = False
+                    self.buttonHeld = False
+
+            if self.buttonPressed == True:
                 self.buttonPressed = False
-                self.buttonHeld = False
+                if self.function != None and len(self.functionArguments) != 0:
+                    self.function(*self.functionArguments)
+                elif self.function != None:
+                    self.function()
+                return False
+            else:
+                return True
 
-        if self.buttonPressed == True:
-            self.buttonPressed = False
-            if self.function != None and len(self.functionArguments) != 0:
-                self.function(*self.functionArguments)
-            elif self.function != None:
-                self.function()
-            return False
-        else:
-            return True
+    def hideButton(self):
+        self.buttonHidden = True
+        self.buttonHover = False
+        self.buttonHeld = False
+        self.buttonPressed = False
+        
+    def showButton(self):
+        self.buttonHidden = False
 
 def setGameEvent(event, value):
     gameEvent[event]=value
@@ -422,6 +433,10 @@ class InputBox:
 print(button)
 while True: 
 
+    # stores the (x,y) coordinates into 
+    # the variable as a tuple 
+    mouse = pygame.mouse.get_pos() 
+
     for windowInParticular in window:
         if window[windowInParticular].checkIfOpen():
             gameEvent['windowCurrentlyOpen'] = True
@@ -429,18 +444,22 @@ while True:
         gameEvent['windowCurrentlyOpen'] = False
 
     WindowsRG.fill(Fondo) 
-
-    """
-    button['BotonPrueba'].show()
-    button['BotonPrueba2'].show()
-    button['BotonPrueba3'].show()
-    """
     
     if gameEvent['windowCurrentlyOpen'] == False:
-        button['MyComputerButton'].show()
-        button['MyDocumentsButton'].show()
-        button['RecycleBinButton'].show()
-        button['WindowsMediaPlayerButton'].show()
+        button['MyComputerButton'].showButton()
+        button['MyDocumentsButton'].showButton()
+        button['RecycleBinButton'].showButton()
+        button['WindowsMediaPlayerButton'].showButton()
+    else:
+        button['MyComputerButton'].hideButton()
+        button['MyDocumentsButton'].hideButton()
+        button['RecycleBinButton'].hideButton()
+        button['WindowsMediaPlayerButton'].hideButton()
+
+    button['MyComputerButton'].render()
+    button['MyDocumentsButton'].render()
+    button['RecycleBinButton'].render()
+    button['WindowsMediaPlayerButton'].render()
 
     WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
     WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
@@ -496,10 +515,6 @@ while True:
         for windowObject in window:
             window[windowObject].checkPress(event)
 
-    # stores the (x,y) coordinates into 
-    # the variable as a tuple 
-    mouse = pygame.mouse.get_pos() 
-
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
         pygame.draw.rect(WindowsRG,color_blanco,(0, 157, 356, 402))
@@ -522,7 +537,7 @@ while True:
 
     # Show all windows that are open
     for openWindows in window:
-        window[windowObject].show()
+        window[windowObject].render()
 
     # Barra de Tareas
     pygame.draw.rect(WindowsRG,BarraDeTareas,[0,558,800,42]) 
@@ -531,7 +546,7 @@ while True:
     GenerateText(size=normalfontsize-2, text="3:00 AM", color=color_negro, font=normalfontstyle, x=1480, y=1155, window=WindowsRG, center=True)
 
     # Start Button
-    button['StartButton'].show()
+    button['StartButton'].render()
     WindowsRG.blit(Asset["StartMenu"], (8, 564))
     GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
