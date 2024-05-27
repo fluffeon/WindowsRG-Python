@@ -7,11 +7,12 @@ from sys import platform
 # Recreación en Python para un proyecto final de un curso de Python.
 
 # Things that happen on Windows
-gameEvents={
+gameEvent={
     "myDocumentsOpen": False,
     'startMenuOpen': False,
     'windowCurrentlyOpen': False,
     'shuttingDown': False,
+    'startMenuSelection': 0
 }
 
 
@@ -256,7 +257,7 @@ class Button:
     def checkPress(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
-            if self.button.collidepoint(event.pos) and gameEvents['startMenuOpen'] == False and self.startButton == False:
+            if self.button.collidepoint(event.pos) and gameEvent['startMenuOpen'] == False and self.startButton == False:
                 self.buttonHeld = True
             elif self.button.collidepoint(event.pos) and self.startButton == True:
                 self.buttonHeld = True
@@ -268,7 +269,7 @@ class Button:
                 self.buttonPressed = True
                 self.buttonHeld = False
                 if self.startButton == True:
-                    if gameEvents['startMenuOpen'] == False:
+                    if gameEvent['startMenuOpen'] == False:
                         self.buttonToggle = False
                     else:
                         self.buttonToggle = True
@@ -278,7 +279,7 @@ class Button:
                     self.buttonToggle = False
             else:
                 if self.startButton == True:
-                    if gameEvents['startMenuOpen'] == False:
+                    if gameEvent['startMenuOpen'] == False:
                         self.buttonToggle = False
                     else:
                         self.buttonToggle = True
@@ -368,22 +369,25 @@ while True:
             pygame.quit() 
               
         #checks if a mouse is clicked 
+        if event.type == pygame.MOUSEBUTTONUP and gameEvent['startMenuOpen'] == True and gameEvent['startMenuSelection'] in range(0,10):
+            print(f"Seleccionaste: {MenuOptions[gameEvent['startMenuSelection']]}")
+
         if event.type == pygame.MOUSEBUTTONUP:
             
-            if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40 and gameEvents['startMenuOpen'] == False: 
-                gameEvents['startMenuOpen'] = True
+            if 6 <= mouse[0] <= 6+130 and 554 <= mouse[1] <= 554+40 and gameEvent['startMenuOpen'] == False: 
+                gameEvent['startMenuOpen'] = True
             else:
-                gameEvents['startMenuOpen'] = False
+                gameEvent['startMenuOpen'] = False
 
         if bigWindow.checkIfOpen(event) == False:
-            gameEvents['myDocumentsOpen'] = False
+            gameEvent['myDocumentsOpen'] = False
 
         BotonPrueba.checkPress(event)
         BotonPrueba2.checkPress(event)
         BotonPrueba3.checkPress(event)
         StartButton.checkPress(event)
 
-    if gameEvents['myDocumentsOpen'] == True:
+    if gameEvent['myDocumentsOpen'] == True:
         bigWindow.open()
       
     # stores the (x,y) coordinates into 
@@ -400,16 +404,18 @@ while True:
     BotonPrueba2.show()
     BotonPrueba3.show()
 
-    if gameEvents['startMenuOpen'] == True:
+    if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
         pygame.draw.rect(WindowsRG,color_blanco,(0, 157, 356, 402))
         pygame.draw.rect(WindowsRG,color_negro,(2, 157, 354, 402))
         pygame.draw.rect(WindowsRG,BarraDeTareas,(2, 157, 352, 400))
 
+        gameEvent['startMenuSelection']=0
         for a in range(157,557,40):
             if 2 <= mouse[0] <= 352 and 140 <= mouse[1] <= a+40: 
                 pygame.draw.rect(WindowsRG,(BarraDeTareas[0]-50, BarraDeTareas[1]-50, BarraDeTareas[2]-50),(2, a, 352, 40))
                 break        
+            gameEvent['startMenuSelection']+=1
 
         # Opciones
         StartingPosition=157
@@ -425,7 +431,7 @@ while True:
     GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
     # Hour
-    GenerateText(size=normalfontsize, text="3:00 AM", color=color_negro, font=normalfontstyle, x=700, y=562, window=WindowsRG)
+    GenerateText(size=normalfontsize-2, text="3:00 AM", color=color_negro, font=normalfontstyle, x=1480, y=1155, window=WindowsRG, center=True)
     
       
     # updates the frames of the game 
