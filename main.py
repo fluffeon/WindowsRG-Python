@@ -1,3 +1,4 @@
+#!/sbin/python
 import os
 from sys import argv
 from sys import platform
