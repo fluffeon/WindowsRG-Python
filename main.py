@@ -1,12 +1,24 @@
-import pygame
 import os
-from time import sleep
+from sys import argv
 from sys import platform
+from time import sleep
+
+Arguments=(argv[1:])
+
+if "--help" in Arguments:
+    print("Windows RG Build 207 en Pygame / Windows RG Build 207 in Pygame")
+    print("Proyecto Final")
+    print()
+    print("Arguments:")
+    print("     --help      Mostrar ayuda / Show help")
+    print("     --show-fps  Mostrar FPS / Show FPS")
+    exit()
 
 # Windows RG Build 204 recreated in Python
 # Recreación en Python para un proyecto final de un curso de Python.
 
 # Things that happen on Windows
+global gameEvent
 gameEvent={
     "myDocumentsOpen": False,
     'startMenuOpen': False,
@@ -18,6 +30,8 @@ gameEvent={
 
 ProgramDirectory=os.path.dirname(__file__)
 IconDirectory=os.path.join(ProgramDirectory, 'Assets', 'Icons')
+
+import pygame
 
 pygame.init()
 
@@ -59,7 +73,9 @@ color_negro = (0,0,0)
 StartingPosition2=145
 
 MenuOptions=['Word', 'Windows Update', 'Crash', 'Solitaire', 'Order Food', 'Go Online', 'Paint', 'Help', 'Reboot', 'Shut Down']
-  
+
+print(MenuOptions)
+
 # Function to render texts however I like
 def GenerateText(size,text,color,font,x,y,window,bold=False,italic=False,underline=False,strikethrough=False,center=False):
     fontstyle=pygame.font.SysFont(font,size)
@@ -192,16 +208,22 @@ class Window:
 
 class Button:
     
-    def __init__(self, x, y, screen, label='', function="", h=None, w=None, holdButtonifPressed=False, startButton=False):
+    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0)):
         self.x = x
         self.y = y
-        self.color = BarraDeTareas
-        self.black = color_negro
-        self.white = color_blanco
-        self.blue = "#0000FF"
+        self.color = color
+        self.shadingColor1 = shadingColor1
+        self.shadingColor2 = shadingColor2
+        self.textColor = textColor
+        self.hoverColor = hoverColor
+        self.holdColor = holdColor
         self.screen = screen
+        self.function = function
+        self.functionArguments = functionArguments
         self.holdButtonifPressed = holdButtonifPressed
         self.startButton=startButton
+        self.shading=shading
+        self.buttonHover = False
         if holdButtonifPressed == True:
             self.buttonToggle = False
         else:
@@ -210,7 +232,7 @@ class Button:
         self.label = label
 
         self.fontstyle=pygame.font.SysFont(normalfontstyle,25)
-        self.actualtext=self.fontstyle.render(label, True, self.black)
+        self.actualtext=self.fontstyle.render(label, True, self.textColor)
         self.text_rect = self.actualtext.get_rect(center=(self.x, self.y)) 
 
         self.textx=self.text_rect[0]
@@ -236,27 +258,37 @@ class Button:
         self.buttonPressed = False
     
     def show(self):
-        if self.holdButtonifPressed == True:
+        if self.holdButtonifPressed == True and self.shading == True:
             if self.buttonHeld == True or self.buttonToggle == True:
-                pygame.draw.rect(self.screen, self.white, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.black, self.buttonShade2)
+                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
+                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
             elif self.buttonPressed == False or self.buttonToggle == False:
-                pygame.draw.rect(self.screen, self.black, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.white, self.buttonShade2)
-        else:
+                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
+        elif self.shading == True:
             if self.buttonHeld == False:
-                pygame.draw.rect(self.screen, self.black, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.white, self.buttonShade2)
+                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
             else:
-                pygame.draw.rect(self.screen, self.white, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.black, self.buttonShade2)
-
-        pygame.draw.rect(self.screen, self.color, self.button)
+                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
+                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
+        
+        if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False:
+            pygame.draw.rect(self.screen, self.holdColor, self.button)
+        elif self.buttonHover == True and gameEvent['startMenuOpen'] == False:
+            pygame.draw.rect(self.screen, self.hoverColor, self.button)
+        else:
+            pygame.draw.rect(self.screen, self.color, self.button)
         self.screen.blit(self.actualtext, self.text_rect)
 
     def checkPress(self, event):
+        
+        if self.button.collidepoint(pygame.mouse.get_pos()):
+            self.buttonHover = True
+        else:
+            self.buttonHover = False
+
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # If the user clicked on the input_box rect.
             if self.button.collidepoint(event.pos) and gameEvent['startMenuOpen'] == False and self.startButton == False:
                 self.buttonHeld = True
             elif self.button.collidepoint(event.pos) and self.startButton == True:
@@ -265,6 +297,7 @@ class Button:
                 self.buttonHeld = False
 
         if event.type == pygame.MOUSEBUTTONUP:
+
             if self.buttonHeld == True and self.button.collidepoint(event.pos):
                 self.buttonPressed = True
                 self.buttonHeld = False
@@ -288,16 +321,35 @@ class Button:
 
         if self.buttonPressed == True:
             self.buttonPressed = False
+            if self.function != None and len(self.functionArguments) != 0:
+                self.function(*self.functionArguments)
+            elif self.function != None:
+                self.function()
             return False
         else:
             return True
 
-BotonPrueba=Button(x=350, y=286, screen=WindowsRG, label='Search')
-BotonPrueba3=Button(x=600, y=286, screen=WindowsRG, label='Caca')
+def setGameEvent(event, value):
+    gameEvent[event]=value
+    
 
-BotonPrueba2=Button(x=450, y=286, w=10, h=200, screen=WindowsRG, holdButtonifPressed=True)
+BotonPrueba=Button(x=350, y=286, screen=WindowsRG, label='Search', shading=False, hoverColor=(100, 100, 100))
+BotonPrueba3=Button(x=600, y=286, screen=WindowsRG, label='Caca', hoverColor=(100, 100, 100))
 
+BotonPrueba2=Button(x=450, y=286, w=10, h=200, screen=WindowsRG, holdButtonifPressed=True, hoverColor=(100, 100, 100))
+
+# Start Button
 StartButton=Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True)
+
+# Desktop Icons
+DesktopIconHover=(0,153-30,255-30)
+DesktopIconHold=(0,153-60,255-60)
+
+MyComputerButton=Button(x=0, y=0, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold)
+MyDocumentsButton=Button(x=0, y=90, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=setGameEvent, functionArguments=('myDocumentsOpen', True))
+RecycleBinButton=Button(x=0, y=180, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold)
+WindowsMediaPlayerButton=Button(x=0, y=280, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold)
+
 
 class InputBox:
 
@@ -345,21 +397,33 @@ class InputBox:
 
 # 
 bigWindow=Window(10, 10, Width-20, Height-105, WindowsRG, "My Documents")
-
 while True: 
 
     WindowsRG.fill(Fondo) 
+
+    BotonPrueba.show()
+    BotonPrueba2.show()
+    BotonPrueba3.show()
     
+    if gameEvent['myDocumentsOpen'] == True:
+        gameEvent['windowCurrentlyOpen'] = True
+    else:
+        gameEvent['windowCurrentlyOpen'] = False
+
+    if gameEvent['windowCurrentlyOpen'] == False:
+        MyComputerButton.show()
+        MyDocumentsButton.show()
+        RecycleBinButton.show()
+        WindowsMediaPlayerButton.show()
+
     WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
-    GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
-
     WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
-    GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
-
     WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
-    GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
-
     WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
+    
+    GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
+    GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
+    GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
     GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
     GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
 
@@ -368,9 +432,30 @@ while True:
         if event.type == pygame.QUIT: 
             pygame.quit() 
               
-        #checks if a mouse is clicked 
+        # Checks if mouse is left-clicked
         if event.type == pygame.MOUSEBUTTONUP and gameEvent['startMenuOpen'] == True and gameEvent['startMenuSelection'] in range(0,10):
             print(f"Seleccionaste: {MenuOptions[gameEvent['startMenuSelection']]}")
+            match MenuOptions[gameEvent['startMenuSelection']]:
+                case 'Word':
+                    pass
+                case 'Windows Update':
+                    pass
+                case 'Crash':
+                    pass
+                case 'Solitaire':
+                    pass
+                case 'Order Food':
+                    pass
+                case 'Go Online':
+                    pass
+                case 'Paint':
+                    pass
+                case 'Help':
+                    pass
+                case 'Reboot':
+                    pass
+                case 'Shut Down':
+                    pass
 
         if event.type == pygame.MOUSEBUTTONUP:
             
@@ -387,6 +472,12 @@ while True:
         BotonPrueba3.checkPress(event)
         StartButton.checkPress(event)
 
+        MyComputerButton.checkPress(event)
+        MyDocumentsButton.checkPress(event)
+        RecycleBinButton.checkPress(event)
+        WindowsMediaPlayerButton.checkPress(event)
+        
+
     if gameEvent['myDocumentsOpen'] == True:
         bigWindow.open()
       
@@ -397,12 +488,8 @@ while True:
     # Barra de Tareas
     pygame.draw.rect(WindowsRG,BarraDeTareas,[0,558,800,42]) 
 
-    # if mouse is hovered on a button it 
-    # changes to lighter shade  
+    # Show the buttons
     StartButton.show()
-    BotonPrueba.show()
-    BotonPrueba2.show()
-    BotonPrueba3.show()
 
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
@@ -423,8 +510,6 @@ while True:
             if i != 0:
                 StartingPosition+=40
             GenerateText(size=bigfontsize-8, text=str(MenuOptions[i]), color=color_negro, font=normalfontstyle, x=60, y=StartingPosition, window=WindowsRG)
-      
-    # superimposing the text onto our button 
 
     # Start Button
     WindowsRG.blit(Asset["StartMenu"], (8, 564))
@@ -436,4 +521,6 @@ while True:
       
     # updates the frames of the game 
     clock.tick(60)
+    if "--show-fps" in Arguments:
+        GenerateText(size=normalfontsize-2, text=f"{int(clock.get_fps())} FPS", color=color_negro, font=normalfontstyle, x=2, y=2, window=WindowsRG)
     pygame.display.update() 
