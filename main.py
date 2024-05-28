@@ -34,6 +34,7 @@ gameEvent={
     'currentExplorerPage': None,
     'currentWindow': None,
     'videoPlaying': False,
+    'progressBarXPosition': 300
 }
 
 
@@ -621,6 +622,10 @@ while True:
                 pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
                 Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
 
+                # Progress Bar
+                pygame.draw.rect(WindowsRG,color_negro,(300, 504, 482, 4))
+                pygame.draw.rect(WindowsRG,color_negro,(gameEvent['progressBarXPosition'], 490, 30, 30))
+
                 button['WMPPlayButton'].render()
                 button['WMPPauseButton'].render()
                 button['WMPPlayButton'].showButton()
@@ -636,6 +641,8 @@ while True:
 
                 if Asset['Video-MediaPlayer'].is_paused == True:
                     button['WMPPlayButton'].changeToggle(False)
+                elif Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].is_paused == False:
+                    gameEvent['progressBarXPosition']+=0.3
 
                 if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
                     WindowsRG.blit(Video, (136, 58))
@@ -646,8 +653,10 @@ while True:
                     button['WMPPlayButton'].disableButton()
                     button['WMPPauseButton'].disableButton()
     else:
+        gameEvent['progressBarXPosition']=300
         Asset['Video-MediaPlayer'].stop()
         button['WMPPlayButton'].enableButton()
+        button['WMPPauseButton'].enableButton()
         button['WMPPlayButton'].changeToggle(False)
 
     if gameEvent['startMenuOpen'] == True:
