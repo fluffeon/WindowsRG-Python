@@ -58,7 +58,7 @@ for icon in os.listdir(IconDirectory):
 
 for video in os.listdir(VideoDirectory):
     if video.lower().endswith(('.mp4')):
-        Asset[f"Video-{icon[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
+        Asset[f"Video-{video[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
 
 Asset['StartMenu'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'StartMenu.png'))
 Asset['StartMenu'] = pygame.transform.scale(Asset['StartMenu'], (52, 28))
