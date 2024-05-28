@@ -610,38 +610,36 @@ while True:
     for openWindows in window:
         window[windowObject].render()
 
-    if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == 'Windows Media Player':
-        pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
-        Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
+    if window['explorerWindow'].checkIfOpen():
+        match window['explorerWindow'].windowTitle():
+            case 'Windows Media Player':
+                pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
+                Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
 
-        button['WMPPlayButton'].render()
-        button['WMPPauseButton'].render()
-        button['WMPPlayButton'].showButton()
-        button['WMPPauseButton'].showButton()
+                button['WMPPlayButton'].render()
+                button['WMPPauseButton'].render()
+                button['WMPPlayButton'].showButton()
+                button['WMPPauseButton'].showButton()
 
-        # Play Button Triangle
-        Triangle_x = 160
-        Triangle_y = 482
-        pygame.draw.polygon(WindowsRG, color_negro, ((0+Triangle_x, 0+Triangle_y), (20+Triangle_x, 20+Triangle_y), (0+Triangle_x, 40+Triangle_y)))
+                # Play Button Triangle
+                Triangle_x = 160
+                Triangle_y = 482
+                pygame.draw.polygon(WindowsRG, color_negro, ((0+Triangle_x, 0+Triangle_y), (20+Triangle_x, 20+Triangle_y), (0+Triangle_x, 40+Triangle_y)))
 
-        # Square
-        pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
+                # Square
+                pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
 
-        if Asset['Video-MediaPlayer'].is_paused == True:
-            button['WMPPlayButton'].changeToggle(False)
+                if Asset['Video-MediaPlayer'].is_paused == True:
+                    button['WMPPlayButton'].changeToggle(False)
 
-        if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
-            WindowsRG.blit(Video, (136, 58))
+                if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
+                    WindowsRG.blit(Video, (136, 58))
 
-        if Asset['Video-MediaPlayer'].remaining_time <= 100:
-            #window['explorerWindow'].enableCloseButton()
-            Asset['Video-MediaPlayer'].pause()
-            button['WMPPlayButton'].disableButton()
-            button['WMPPauseButton'].disableButton()
-        else:
-            pass
-            #window['explorerWindow'].disableCloseButton()
-            #Asset['Video-MediaPlayer'].play(loop=False)
+                if Asset['Video-MediaPlayer'].remaining_time <= 100:
+                    #window['explorerWindow'].enableCloseButton()
+                    Asset['Video-MediaPlayer'].pause()
+                    button['WMPPlayButton'].disableButton()
+                    button['WMPPauseButton'].disableButton()
     else:
         Asset['Video-MediaPlayer'].stop()
         button['WMPPlayButton'].enableButton()
