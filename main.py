@@ -33,6 +33,7 @@ gameEvent={
     'startMenuSelection': 0,
     'currentExplorerPage': None,
     'currentWindow': None,
+    'videoPlaying': False,
 }
 
 
@@ -372,6 +373,12 @@ class Button:
     def showButton(self):
         self.buttonHidden = False
 
+    def changeToggle(self):
+        if self.buttonToggle == True:
+            self.buttonToggle = False
+        else:
+            self.buttonToggle = True
+
 def setGameEvent(event, value):
     gameEvent[event]=value
     
@@ -399,7 +406,11 @@ button={
     'MyComputerButton': Button(x=0, y=0, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['My Computer']),
     'MyDocumentsButton': Button(x=0, y=90, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['My Documents']),
     'RecycleBinButton': Button(x=0, y=180, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Recycle Bin']),
-    'WindowsMediaPlayerButton': Button(x=0, y=280, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Windows Media Player'])
+    'WindowsMediaPlayerButton': Button(x=0, y=280, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Windows Media Player']),
+
+    # Windows Media Player
+    'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True),
+    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG)
 }
 class InputBox:
 
@@ -538,13 +549,28 @@ while True:
         window[windowObject].render()
 
     if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == 'Windows Media Player':
+        pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
         WindowsRG.blit(Video, (136, 58))
         Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
+
+        button['WMPPlayButton'].render()
+        button['WMPPauseButton'].render()
+        button['WMPPlayButton'].showButton()
+        button['WMPPauseButton'].showButton()
+
+        # Play Button Triangle
+        Triangle_x = 160
+        Triangle_y = 482
+        pygame.draw.polygon(WindowsRG, color_negro, ((0+Triangle_x, 0+Triangle_y), (20+Triangle_x, 20+Triangle_y), (0+Triangle_x, 40+Triangle_y)))
+
+        # Square
+        pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
+
         if Asset['Video-MediaPlayer'].remaining_time <= 100:
-            window['explorerWindow'].enableCloseButton()
+            #window['explorerWindow'].enableCloseButton()
             Asset['Video-MediaPlayer'].pause()
         else:
-            window['explorerWindow'].disableCloseButton()
+            #window['explorerWindow'].disableCloseButton()
             Asset['Video-MediaPlayer'].play(loop=False)
     else:
         Asset['Video-MediaPlayer'].stop() 
