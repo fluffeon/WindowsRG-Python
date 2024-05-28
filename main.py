@@ -122,7 +122,7 @@ else:
     normalfontsize = 22
     normalfontstyle = 'Liberation Sans'
     bigfontsize = 42
-    bigfontstyle = 'Corbel'
+    bigfontstyle = 'dgjahkjgldakljg'
 
 clock = pygame.time.Clock()
 
@@ -241,7 +241,7 @@ class Window:
 
 class Button:
     
-    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0)):
+    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, functionOnToggleDisable=None, functionArgumentsOnToggleDisable=[], startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0)):
         self.x = x
         self.y = y
         self.color = color
@@ -251,9 +251,18 @@ class Button:
         self.hoverColor = hoverColor
         self.holdColor = holdColor
         self.screen = screen
+        self.holdButtonifPressed = holdButtonifPressed
+
+        # FUNCTION STUFF
         self.function = function
         self.functionArguments = functionArguments
-        self.holdButtonifPressed = holdButtonifPressed
+        
+        if holdButtonifPressed == False and functionOnToggleDisable != None:
+            raise KeyError('This function is only available on toggle buttons.')
+        
+        self.functionOnToggleDisable = functionOnToggleDisable
+        self.functionArgumentsOnToggleDisable = functionArgumentsOnToggleDisable
+
         self.startButton=startButton
         self.shading=shading
         self.buttonHover = False
@@ -290,10 +299,14 @@ class Button:
 
         self.buttonHeld = False
         self.buttonPressed = False
+        self.buttonEnabled = True
     
     def render(self):
         if self.buttonHidden == False:
-            if self.holdButtonifPressed == True and self.shading == True:
+            if self.buttonEnabled == False:
+                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
+            elif self.holdButtonifPressed == True and self.shading == True and self.buttonEnabled == True:
                 if self.buttonHeld == True or self.buttonToggle == True:
                     pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
                     pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
@@ -301,23 +314,23 @@ class Button:
                     pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
                     pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
             elif self.shading == True:
-                if self.buttonHeld == False:
-                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-                else:
+                if self.buttonHeld == True and self.buttonEnabled == True:
                     pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
                     pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
+                elif self.buttonHeld == False:
+                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
+                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
         
-            if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False:
+            if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False and self.buttonEnabled == True:
                 pygame.draw.rect(self.screen, self.holdColor, self.button)
-            elif self.buttonHover == True and gameEvent['startMenuOpen'] == False:
+            elif self.buttonHover == True and gameEvent['startMenuOpen'] == False and self.buttonEnabled == True:
                 pygame.draw.rect(self.screen, self.hoverColor, self.button)
             else:
                 pygame.draw.rect(self.screen, self.color, self.button)
             self.screen.blit(self.actualtext, self.text_rect)
 
     def checkPress(self, event):
-        if self.buttonHidden == False:
+        if self.buttonHidden == False and self.buttonEnabled == True:
             if self.button.collidepoint(pygame.mouse.get_pos()):
                 self.buttonHover = True
             else:
@@ -351,10 +364,28 @@ class Button:
                             self.buttonToggle = False
                         else:
                             self.buttonToggle = True
+                    
                     self.buttonPressed = False
                     self.buttonHeld = False
 
-            if self.buttonPressed == True:
+            if self.holdButtonifPressed == True:
+                if self.buttonPressed == True:
+                    self.buttonPressed = False
+                    if self.function != None and len(self.functionArguments) != 0 and self.buttonToggle == True:
+                        self.function(*self.functionArguments)
+                        return True
+                    elif self.function != None and self.buttonToggle == True:
+                        self.function()
+                        return True
+
+                    elif self.functionOnToggleDisable != None and len(self.functionArgumentsOnToggleDisable) != 0 and self.buttonToggle == False:
+                        self.functionOnToggleDisable(*self.functionArgumentsOnToggleDisable)
+                        return False
+                    elif self.functionOnToggleDisable != None and self.buttonToggle == False:
+                        self.functionOnToggleDisable()
+                        return False
+
+            elif self.buttonPressed == True:
                 self.buttonPressed = False
                 if self.function != None and len(self.functionArguments) != 0:
                     self.function(*self.functionArguments)
@@ -363,21 +394,42 @@ class Button:
                 return False
             else:
                 return True
+        else:
+            self.buttonPressed = False
+            self.buttonHeld = False
+            self.buttonHover = False
 
     def hideButton(self):
         self.buttonHidden = True
         self.buttonHover = False
         self.buttonHeld = False
         self.buttonPressed = False
+        if self.holdButtonifPressed == True:
+            self.buttonToggle = False
         
     def showButton(self):
         self.buttonHidden = False
 
-    def changeToggle(self):
-        if self.buttonToggle == True:
+    def enableButton(self):
+        self.buttonEnabled = True
+    
+    def disableButton(self):
+        self.buttonEnabled = False
+        self.buttonHover = False
+        self.buttonHeld = False
+        self.buttonPressed = False
+        if self.holdButtonifPressed == True:
             self.buttonToggle = False
-        else:
+
+    def changeToggle(self, arg=None):
+        if self.buttonToggle == True and arg == None:
+            self.buttonToggle = False
+        elif self.buttonToggle == False and arg == None:
             self.buttonToggle = True
+        elif arg == True:
+            self.buttonToggle = True
+        elif arg == False:
+            self.buttonToggle = False
 
 def setGameEvent(event, value):
     gameEvent[event]=value
@@ -388,6 +440,16 @@ DesktopIconHold=(0,153-60,255-60),
 window={
     'explorerWindow': Window(125, 10, Width-130, Height-95, WindowsRG, gameEvent['currentWindow'])
     }
+
+def playVideo():
+    if Asset['Video-MediaPlayer'].remaining_time == 21833.333333333332:
+        Asset['Video-MediaPlayer'].play()
+    else:
+        Asset['Video-MediaPlayer'].resume()
+    
+    if Asset['Video-MediaPlayer'].is_paused:
+        Asset['Video-MediaPlayer'].resume()
+
 
 button={
     # ---------
@@ -409,8 +471,8 @@ button={
     'WindowsMediaPlayerButton': Button(x=0, y=280, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Windows Media Player']),
 
     # Windows Media Player
-    'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True),
-    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG)
+    'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=Asset['Video-MediaPlayer'].pause),
+    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=Asset['Video-MediaPlayer'].pause)
 }
 class InputBox:
 
@@ -550,7 +612,6 @@ while True:
 
     if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == 'Windows Media Player':
         pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
-        WindowsRG.blit(Video, (136, 58))
         Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
 
         button['WMPPlayButton'].render()
@@ -566,14 +627,25 @@ while True:
         # Square
         pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
 
+        if Asset['Video-MediaPlayer'].is_paused == True:
+            button['WMPPlayButton'].changeToggle(False)
+
+        if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
+            WindowsRG.blit(Video, (136, 58))
+
         if Asset['Video-MediaPlayer'].remaining_time <= 100:
             #window['explorerWindow'].enableCloseButton()
             Asset['Video-MediaPlayer'].pause()
+            button['WMPPlayButton'].disableButton()
+            button['WMPPauseButton'].disableButton()
         else:
+            pass
             #window['explorerWindow'].disableCloseButton()
-            Asset['Video-MediaPlayer'].play(loop=False)
+            #Asset['Video-MediaPlayer'].play(loop=False)
     else:
-        Asset['Video-MediaPlayer'].stop() 
+        Asset['Video-MediaPlayer'].stop()
+        button['WMPPlayButton'].enableButton()
+        button['WMPPlayButton'].changeToggle(False)
 
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
