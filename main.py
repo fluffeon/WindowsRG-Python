@@ -1,7 +1,7 @@
 #!/sbin/python
 import os
+from platform import system
 from sys import argv
-from sys import platform
 from time import sleep
 
 Arguments=(argv[1:])
@@ -111,10 +111,10 @@ def GenerateText(size,text,color,font,x,y,window,bold=False,italic=False,underli
         actualtext=fontstyle.render(text, True, color)
         window.blit(actualtext, position) 
 
-if platform != "linux":
-    normalfontsize = 20
+if system() == "Windows":
+    normalfontsize = 22
     normalfontstyle = 'Arial'
-    bigfontsize = 20
+    bigfontsize = 42
     bigfontstyle = 'Arial'
 else:
     smallfontsize = 22
@@ -674,7 +674,10 @@ while True:
     # Start Button
     button['StartButton'].render()
     WindowsRG.blit(Asset["StartMenu"], (8, 564))
-    GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
+    if system() == "Windows":
+        GenerateText(size=bigfontsize-18, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True, bold=True)
+    else:
+        GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
     # updates the frames of the game 
     clock.tick(60)
