@@ -63,9 +63,14 @@ for video in os.listdir(VideoDirectory):
 Asset['StartMenu'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'StartMenu.png'))
 Asset['StartMenu'] = pygame.transform.scale(Asset['StartMenu'], (52, 28))
 
+Asset['ProgramIcon'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'ProgramIcon.png'))
+Asset['ProgramIcon'] = pygame.transform.scale(Asset['ProgramIcon'], (50, 50))
+
+
 print(Asset)
 
 pygame.display.set_caption('Windows RG Build 207')
+pygame.display.set_icon(Asset['ProgramIcon'])
 
 
 
