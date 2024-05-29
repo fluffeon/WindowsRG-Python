@@ -34,13 +34,15 @@ gameEvent={
     'currentExplorerPage': None,
     'currentWindow': None,
     'videoPlaying': False,
-    'progressBarXPosition': 300
+    'progressBarXPosition': 300,
+    'wmpCrash': False
 }
 
 
 ProgramDirectory=os.path.dirname(__file__)
 IconDirectory=os.path.join(ProgramDirectory, 'Assets', 'Icons')
 VideoDirectory=os.path.join(ProgramDirectory, 'Assets', 'Video')
+SoundDirectory=os.path.join(ProgramDirectory, 'Assets', 'Sound')
 
 import pygame
 from pygamevideo import Video
@@ -60,6 +62,8 @@ for icon in os.listdir(IconDirectory):
 for video in os.listdir(VideoDirectory):
     if video.lower().endswith(('.mp4')):
         Asset[f"Video-{video[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
+
+print(Asset)
 
 Asset['StartMenu'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'StartMenu.png'))
 Asset['StartMenu'] = pygame.transform.scale(Asset['StartMenu'], (52, 28))
@@ -258,6 +262,7 @@ class Button:
         self.holdColor = holdColor
         self.screen = screen
         self.holdButtonifPressed = holdButtonifPressed
+        self.toReturn = False
 
         # FUNCTION STUFF
         self.function = function
@@ -379,31 +384,40 @@ class Button:
                     self.buttonPressed = False
                     if self.function != None and len(self.functionArguments) != 0 and self.buttonToggle == True:
                         self.function(*self.functionArguments)
-                        return True
+                        self.toReturn = True
                     elif self.function != None and self.buttonToggle == True:
                         self.function()
-                        return True
+                        self.toReturn = True
 
                     elif self.functionOnToggleDisable != None and len(self.functionArgumentsOnToggleDisable) != 0 and self.buttonToggle == False:
                         self.functionOnToggleDisable(*self.functionArgumentsOnToggleDisable)
-                        return False
+                        self.toReturn = False
                     elif self.functionOnToggleDisable != None and self.buttonToggle == False:
                         self.functionOnToggleDisable()
-                        return False
-
-            elif self.buttonPressed == True:
-                self.buttonPressed = False
-                if self.function != None and len(self.functionArguments) != 0:
-                    self.function(*self.functionArguments)
-                elif self.function != None:
-                    self.function()
-                return False
+                        self.toReturn = False
+                else:
+                    if self.buttonToggle == True:
+                        self.toReturn = True
+                    else:
+                        self.toReturn = False
             else:
-                return True
+                if self.buttonPressed == True:
+                    if self.function != None and len(self.functionArguments) != 0:
+                        self.function(*self.functionArguments)
+                    elif self.function != None:
+                        self.function()
+                    self.buttonPressed = False
+                    self.toReturn = True
+                else:
+                    self.toReturn = False
         else:
             self.buttonPressed = False
             self.buttonHeld = False
             self.buttonHover = False
+
+            self.toReturn = False
+
+        return self.toReturn
 
     def hideButton(self):
         self.buttonHidden = True
@@ -439,6 +453,55 @@ class Button:
 
 def setGameEvent(event, value):
     gameEvent[event]=value
+
+class ErrorMessage:
+
+    pygame.mixer.music.load(os.path.join(SoundDirectory, 'Chord.wav'))
+
+    def __init__(self, x, y, screen, title="", buttonLabel="OK", function="", functionArguments=[]):
+        self.windowWeight=400
+        self.windowHeight=200
+        self.ErrorMessageWindow = Window(x, y, self.windowWeight, self.windowHeight, screen, title)
+        self.ErrorMessageButton = Button(x=(x+self.windowWeight/2), y=(y+self.windowHeight), screen=screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
+        self.WarningShown = False
+        self.SoundPlayed = False
+
+    def checkIfOpen(self):
+        return self.ErrorMessageWindow.checkIfOpen()
+
+    def checkPress(self, event):
+        if self.WarningShown == True:
+            self.ErrorMessageWindow.checkPress(event)
+            self.ErrorMessageButton.checkPress(event)
+
+            print(self.ErrorMessageButton.checkPress(event))
+
+            if self.ErrorMessageButton.checkPress(event) == True:
+                self.WarningShown = False
+                self.ErrorMessageButton.changeToggle(False)
+
+    def render(self):
+        if self.WarningShown == True:
+            self.ErrorMessageWindow.render()
+            self.ErrorMessageButton.render()
+        
+            if self.SoundPlayed == False:
+                pygame.mixer.music.play()
+                self.SoundPlayed = True
+        else:
+            self.ErrorMessageWindow.closeWindow()
+    
+    def openWindow(self):
+        self.ErrorMessageWindow.openWindow()
+        self.WarningShown = True
+    
+    def closeWindow(self):
+        self.ErrorMessageWindow.closeWindow()
+        self.WarningShown = False
+        self.SoundPlayed = False
+    
+    def isWarningOpen(self):
+        return self.WarningShown
     
 DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
@@ -446,6 +509,10 @@ DesktopIconHold=(0,153-60,255-60),
 window={
     'explorerWindow': Window(125, 10, Width-130, Height-95, WindowsRG, gameEvent['currentWindow'])
     }
+
+warnings={
+    'testWarning': ErrorMessage(x=Width/4, y=Height/4, screen=WindowsRG, function=window['explorerWindow'].closeWindow)
+}
 
 def playVideo():
     if Asset['Video-MediaPlayer'].remaining_time == 21833.333333333332:
@@ -525,7 +592,6 @@ class InputBox:
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 Video=pygame.Surface((644, 400))
-
 print(button)
 while True: 
 
@@ -612,6 +678,9 @@ while True:
         for windowObject in window:
             window[windowObject].checkPress(event)
 
+        for warningDialogObject in warnings:
+            warnings[warningDialogObject].checkPress(event)
+
     # Render all windows that are open
     for openWindows in window:
         window[windowObject].render()
@@ -649,15 +718,25 @@ while True:
 
                 if Asset['Video-MediaPlayer'].remaining_time <= 100:
                     #window['explorerWindow'].enableCloseButton()
+                    gameEvent['wmpCrash'] = True
                     Asset['Video-MediaPlayer'].pause()
                     button['WMPPlayButton'].disableButton()
                     button['WMPPauseButton'].disableButton()
+
+                if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
+                    warnings['testWarning'].openWindow()
     else:
+        warnings['testWarning'].closeWindow()
+        gameEvent['wmpCrash'] = False
         gameEvent['progressBarXPosition']=300
         Asset['Video-MediaPlayer'].stop()
         button['WMPPlayButton'].enableButton()
         button['WMPPauseButton'].enableButton()
         button['WMPPlayButton'].changeToggle(False)
+
+    for openWindowDialogues in warnings:
+        warnings[openWindowDialogues].render()
+
 
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
