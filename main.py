@@ -149,13 +149,17 @@ class Frame:
         self.color = color
         self.shadeColor = shadeColor
         
-        self.mainFrameShade = pygame.Rect(x-2, y-2, w+2, h+2)
-        self.mainFrame = pygame.Rect(x, y, w, h)
+        self.mainFrameShade = pygame.Rect(x, y, w, h)
+        self.mainFrame = pygame.Rect(x+2, y+2, w-2, h-2)
 
     def render(self):
         pygame.draw.rect(self.screen, self.shadeColor, self.mainFrameShade)
         pygame.draw.rect(self.screen, self.color, self.mainFrame)
 
+
+def GenerateFrame(x, y, w, h, screen, color=(255, 255, 255), shadeColor=(0, 0, 0)):
+    FrameThing=Frame(x=x, y=y, w=w, h=h, screen=screen, color=color, shadeColor=shadeColor)
+    FrameThing.render()
 
 FrameTest=Frame(x=20, y=20, w=50, h=50, screen=WindowsRG)
 
@@ -164,12 +168,12 @@ class Window:
     closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-15)
     closeTexttoBlit=closeText.render("X", True, color_negro)
 
-    def __init__(self, x, y, w, h, screen, title=''):
+    def __init__(self, x, y, w, h, screen, title='', color=(204, 204, 204)):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.color = BarraDeTareas
+        self.color = color
         self.black = color_negro
         self.white = color_blanco
         self.blue = "#0000FF"
@@ -180,15 +184,14 @@ class Window:
         self.title = title
 
         # Main Window
-        self.window = pygame.Rect(x, y+32, w, h)
+        self.window = pygame.Rect(x+2, y+32, w-4, h-34)
 
         # Frame Decorations
-        self.frame2 = pygame.Rect(x-2, y-2, w+4, h+36)
-        self.frame1 = pygame.Rect(x-2, y-2, w+2, h+34)
+        self.frame2 = pygame.Rect(x+2, y+2, w-2, h-2) # Black Shading
+        self.frame1 = pygame.Rect(x, y, w, h) # White Shading
 
         # Title Bar
-        self.barShade = pygame.Rect(x, y+3, w, 32)
-        self.bar = pygame.Rect(x, y, w, 32)
+        self.bar = pygame.Rect(x+2, y+2, w-2, 28)
 
         # Close Button
         self.closeButtonShade1 = pygame.Rect(x+w-32, y+4, 30, 28)
@@ -209,14 +212,13 @@ class Window:
     def render(self):
         if self.closed == False:
             # Frame Decorations
-            pygame.draw.rect(self.screen, self.black, self.frame2)
             pygame.draw.rect(self.screen, self.white, self.frame1)
+            pygame.draw.rect(self.screen, self.black, self.frame2)
         
             # Main Window
             pygame.draw.rect(self.screen, self.color, self.window)
 
             # Title Bar
-            pygame.draw.rect(self.screen, self.black , self.barShade)
             pygame.draw.rect(self.screen, self.blue, self.bar)
 
             # Close Button
@@ -265,6 +267,42 @@ class Window:
 
     def closeWindow(self):
         self.closed = True
+
+    def returnValue(self, value, excludeTitleBar=False):
+        match value:
+            case 'x':
+                return self.x
+            case 'y':
+                if excludeTitleBar:
+                    return self.y+35
+                else:
+                    return self.y
+            case 'w':
+                return self.w
+            case 'h':
+                if excludeTitleBar:
+                    return self.h-34
+                else:
+                    return self.h
+            case 'color':
+                return self.color
+            case default:
+                raise ValueError('Unknown variable or parameter of this window')
+
+    def changeValue(self, variable, value):
+        match variable:
+            case 'x':
+                self.x = int(value)
+            case 'y':
+                self.y = int(value)
+            case 'w':
+                self.w = int(value)
+            case 'h':
+                self.h = int(value)
+            case 'color':
+                self.color = value
+            case default:
+                raise ValueError('Unknown variable or parameter of this window')
 
     def disableCloseButton(self):
         self.closeButtonEnabled = False
@@ -776,6 +814,9 @@ while True:
 
                 if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
                     warnings['testWarning'].openWindow()
+            case 'My Computer' | 'My Documents' | 'Recycle Bin':
+                pass
+                #GenerateFrame(x=window['explorerWindow'].returnValue('x')+4, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True), w=window['explorerWindow'].returnValue('w'), h=window['explorerWindow'].returnValue('h')-4, screen=WindowsRG)
     else:
         warnings['testWarning'].closeWindow()
         gameEvent['wmpCrash'] = False
@@ -787,9 +828,6 @@ while True:
 
     for openWindowDialogues in warnings:
         warnings[openWindowDialogues].render()
-
-
-    FrameTest.render()
 
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
