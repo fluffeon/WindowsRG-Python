@@ -286,7 +286,7 @@ class Window:
                 return self.w
             case 'h':
                 if excludeTitleBar:
-                    return self.h-34
+                    return self.h-32
                 else:
                     return self.h
             case 'color':
@@ -820,8 +820,12 @@ while True:
                 if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
                     warnings['testWarning'].openWindow()
             case 'My Computer' | 'My Documents' | 'Recycle Bin':
-                pass
-                #GenerateFrame(x=window['explorerWindow'].returnValue('x')+4, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True), w=window['explorerWindow'].returnValue('w'), h=window['explorerWindow'].returnValue('h')-4, screen=WindowsRG)
+                GenerateFrame(
+                    x=window['explorerWindow'].returnValue('x') + 8, 
+                    y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 8, 
+                    w=window['explorerWindow'].returnValue('w') - 16, 
+                    h=window['explorerWindow'].returnValue('h', excludeTitleBar=True) - 16, 
+                    screen=WindowsRG)
     else:
         warnings['testWarning'].closeWindow()
         gameEvent['wmpCrash'] = False
