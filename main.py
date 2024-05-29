@@ -138,6 +138,27 @@ else:
 
 clock = pygame.time.Clock()
 
+class Frame:
+
+    def __init__(self, x, y, w, h, screen, color=(255, 255, 255), shadeColor=(0, 0, 0)):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.screen = screen
+        self.color = color
+        self.shadeColor = shadeColor
+        
+        self.mainFrameShade = pygame.Rect(x-2, y-2, w+2, h+2)
+        self.mainFrame = pygame.Rect(x, y, w, h)
+
+    def render(self):
+        pygame.draw.rect(self.screen, self.shadeColor, self.mainFrameShade)
+        pygame.draw.rect(self.screen, self.color, self.mainFrame)
+
+
+FrameTest=Frame(x=20, y=20, w=50, h=50, screen=WindowsRG)
+
 class Window:
 
     closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-15)
@@ -767,6 +788,8 @@ while True:
     for openWindowDialogues in warnings:
         warnings[openWindowDialogues].render()
 
+
+    FrameTest.render()
 
     if gameEvent['startMenuOpen'] == True:
         # Geometria del Menu de Inicio
