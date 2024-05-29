@@ -165,7 +165,7 @@ FrameTest=Frame(x=20, y=20, w=50, h=50, screen=WindowsRG)
 
 class Window:
 
-    closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-15)
+    closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-19)
     closeTexttoBlit=closeText.render("X", True, color_negro)
 
     def __init__(self, x, y, w, h, screen, title='', color=(204, 204, 204)):
@@ -191,13 +191,18 @@ class Window:
         self.frame1 = pygame.Rect(x, y, w, h) # White Shading
 
         # Title Bar
-        self.bar = pygame.Rect(x+2, y+2, w-2, 28)
+        self.bar = pygame.Rect(x+2, y+2, w-4, 28)
+
+        self.closeButtonX = self.x+self.w-28
+        self.closeButtonY = self.y+4
+        self.closeButtonHeight = 24
+        self.closeButtonWeight = 24
 
         # Close Button
-        self.closeButtonShade1 = pygame.Rect(x+w-32, y+4, 30, 28)
-        self.closeButtonShade2 = pygame.Rect(x+w-32, y+2, 28, 28)
+        self.closeButtonShade2 = pygame.Rect(self.closeButtonX, self.closeButtonY, self.closeButtonWeight-2, self.closeButtonHeight-2)
+        self.closeButtonShade1 = pygame.Rect(self.closeButtonX, self.closeButtonY, self.closeButtonWeight, self.closeButtonHeight)
 
-        self.closeButton = pygame.Rect(x+w-30, y+4, 26, 26)
+        self.closeButton = pygame.Rect(self.closeButtonX+2, self.closeButtonY+2, self.closeButtonHeight-4, self.closeButtonWeight-4)
 
         self.closeButtonHeld = False
         self.closeButtonPressed = False
@@ -231,7 +236,7 @@ class Window:
                 pygame.draw.rect(self.screen, self.black, self.closeButtonShade2)
                 pygame.draw.rect(self.screen, self.color, self.closeButton)
 
-            self.screen.blit(self.closeTexttoBlit, (self.x+self.w-27, self.y+1)) 
+            self.screen.blit(self.closeTexttoBlit, (self.closeButtonX+(self.closeButtonWeight/8), self.y+self.closeButtonHeight/8)) 
         
             GenerateText(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, x=self.x+4, y=self.y+4, window=self.screen, bold=True)
 
@@ -274,7 +279,7 @@ class Window:
                 return self.x
             case 'y':
                 if excludeTitleBar:
-                    return self.y+35
+                    return self.y+32
                 else:
                     return self.y
             case 'w':
@@ -523,7 +528,7 @@ class ErrorMessage:
         self.x = x
         self.y = y
         self.windowWeight=400
-        self.windowHeight=200
+        self.windowHeight=240
         self.color = (0,0,0)
         self.screen = screen
         self.message = f"{str(message)} "
@@ -539,7 +544,7 @@ class ErrorMessage:
             self.message = [self.message[0: 30], self.message[30: -1]]
 
         self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
-        self.ErrorMessageButton = Button(x=(self.x+self.windowWeight/2), y=(self.y+self.windowHeight), screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
+        self.ErrorMessageButton = Button(x=(self.ErrorMessageWindow.returnValue('x') + self.windowWeight / 2), y=(self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32), screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
         self.WarningShown = False
         self.SoundPlayed = False
 
@@ -559,8 +564,8 @@ class ErrorMessage:
         if self.WarningShown == True:
             self.ErrorMessageWindow.render()
             self.ErrorMessageButton.render()
-            TextX=self.x+90
-            TextY=self.y+42
+            TextX=self.ErrorMessageWindow.returnValue('x')+90
+            TextY=self.ErrorMessageWindow.returnValue('y')+42
             if type(self.message) == list and len(self.message) >= 4:
                 GenerateText(size=normalfontsize, text=self.message[3], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+96, window=self.screen)
             if type(self.message) == list and len(self.message) >= 3:
@@ -596,7 +601,7 @@ DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
 
 window={
-    'explorerWindow': Window(125, 10, Width-130, Height-95, WindowsRG, gameEvent['currentWindow'])
+    'explorerWindow': Window(125, 10, Width-130, Height-65, WindowsRG, gameEvent['currentWindow'])
     }
 
 warnings={
