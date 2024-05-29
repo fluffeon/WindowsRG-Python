@@ -35,7 +35,10 @@ gameEvent={
     'currentWindow': None,
     'videoPlaying': False,
     'progressBarXPosition': 300,
-    'wmpCrash': False
+    'wmpCrash': False,
+    'documentsCrash': False,
+    'setTimer': False,
+    'timer': 0,
 }
 
 
@@ -46,6 +49,11 @@ SoundDirectory=os.path.join(ProgramDirectory, 'Assets', 'Sound')
 
 import pygame
 from pygamevideo import Video
+
+def setTimeBomb(time):
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    gameEvent['timer'] = time
+    gameEvent['setTimer'] = True
 
 pygame.init()
 WindowsRG = pygame.display.set_mode((Width,Height))
@@ -289,6 +297,15 @@ class Window:
                     return self.h-32
                 else:
                     return self.h
+            case 'middleX':
+                self.halftheWeight=int(self.w // 2)
+                return self.x+self.halftheWeight
+            case 'middleY':
+                self.halftheHeight=int(self.h // 2)
+                if excludeTitleBar:
+                    return self.y+self.halftheHeight-32
+                else:
+                    return self.y+self.halftheHeight
             case 'color':
                 return self.color
             case default:
@@ -317,7 +334,7 @@ class Window:
 
 class Button:
     
-    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, functionOnToggleDisable=None, functionArgumentsOnToggleDisable=[], startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0)):
+    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, functionOnToggleDisable=None, functionArgumentsOnToggleDisable=[], startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0), bold=False):
         self.x = x
         self.y = y
         self.color = color
@@ -352,6 +369,10 @@ class Button:
         self.buttonHidden = False
 
         self.fontstyle=pygame.font.SysFont(normalfontstyle,25)
+
+        if bold == True:
+            self.fontstyle.bold=True
+
         self.actualtext=self.fontstyle.render(label, True, self.textColor)
         self.text_rect = self.actualtext.get_rect(center=(self.x, self.y)) 
 
@@ -544,7 +565,7 @@ class ErrorMessage:
             self.message = [self.message[0: 30], self.message[30: -1]]
 
         self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
-        self.ErrorMessageButton = Button(x=(self.ErrorMessageWindow.returnValue('x') + self.windowWeight / 2), y=(self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32), screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
+        self.ErrorMessageButton = Button(x=self.ErrorMessageWindow.returnValue('middleX'), y=self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32, screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[], bold=True)
         self.WarningShown = False
         self.SoundPlayed = False
 
@@ -605,7 +626,18 @@ window={
     }
 
 warnings={
-    'testWarning': ErrorMessage(x=Width/4, y=Height/4, screen=WindowsRG, function=window['explorerWindow'].closeWindow, message="mediaplayer.exe has performed an illegal operation and will close...                      Isn't that a shame? Isn't it?")
+    'testWarning': ErrorMessage(
+        x=Width/4, y=Height/4, 
+        screen=WindowsRG, 
+        function=window['explorerWindow'].closeWindow, 
+        message="mediaplayer.exe has performed an illegal operation and will close...                      Isn't that a shame? Isn't it?"),
+        
+    'documentsCrash': ErrorMessage(
+        x=window['explorerWindow'].returnValue('middleX') - 400 / 2, 
+        y=window['explorerWindow'].returnValue('middleY', excludeTitleBar=True) - 240 / 4, 
+        screen=WindowsRG, 
+        function=window['explorerWindow'].closeWindow, 
+        message="explorer.exe has performed an illegal operation, and will now be closed.")
 }
 
 def playVideo():
@@ -765,6 +797,13 @@ while True:
                 gameEvent['startMenuOpen'] = True
             else:
                 gameEvent['startMenuOpen'] = False
+
+        if event.type == pygame.USEREVENT and gameEvent['setTimer'] == True:
+            if gameEvent['timer'] > 0:
+                gameEvent['timer'] -= 1
+            else:
+                gameEvent['timer'] = 0
+            
         
         for buttonObject in button:
             button[buttonObject].checkPress(event)
@@ -821,13 +860,102 @@ while True:
                     warnings['testWarning'].openWindow()
             case 'My Computer' | 'My Documents' | 'Recycle Bin':
                 GenerateFrame(
-                    x=window['explorerWindow'].returnValue('x') + 8, 
-                    y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 8, 
-                    w=window['explorerWindow'].returnValue('w') - 16, 
-                    h=window['explorerWindow'].returnValue('h', excludeTitleBar=True) - 16, 
+                    x=window['explorerWindow'].returnValue('x') + 12, 
+                    y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+                    w=window['explorerWindow'].returnValue('w') - 24, 
+                    h=window['explorerWindow'].returnValue('h', excludeTitleBar=True) - 24, 
                     screen=WindowsRG)
+
+                WindowSummaryX=window['explorerWindow'].returnValue('x') + 18
+                WindowSummaryY=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 18
+
+                DescriptionSummaryY=WindowSummaryY + 48
+
+                GenerateText(
+                        size=normalfontsize, 
+                        text=window['explorerWindow'].windowTitle(), 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=WindowSummaryY, 
+                        window=WindowsRG,
+                        bold=True)
+
+                if window['explorerWindow'].windowTitle() == "My Computer":
+                    pass
+                elif window['explorerWindow'].windowTitle() == "My Documents":
+                    if gameEvent['setTimer'] == False:
+                        setTimeBomb(3)
+
+                    if gameEvent['timer'] == 0:
+                        gameEvent['documentsCrash'] = True
+                    
+                    if gameEvent['documentsCrash']:
+                        warnings['documentsCrash'].openWindow()
+                    else:
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="You boring arse.", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="Get some", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+20, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="documents before", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+40, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="you come in here", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+60, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="looking for them.", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+80, 
+                            window=WindowsRG,
+                            bold=True)
+
+                    
+
+                        
+                elif window['explorerWindow'].windowTitle() == "Recycle Bin":
+                    GenerateText(
+                        size=normalfontsize, 
+                        text="Recycle Bin", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=WindowSummaryY, 
+                        window=WindowsRG,
+                        bold=True)
+
     else:
+        gameEvent['setTimer'] = False
+        gameEvent['timer'] = 10
+        gameEvent['documentsCrash'] = False
         warnings['testWarning'].closeWindow()
+        warnings['documentsCrash'].closeWindow()
         gameEvent['wmpCrash'] = False
         gameEvent['progressBarXPosition']=300
         Asset['Video-MediaPlayer'].stop()
