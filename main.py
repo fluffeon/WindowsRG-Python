@@ -57,8 +57,10 @@ Asset={}
 for icon in os.listdir(IconDirectory):
     if icon.lower().endswith(('.png', '.jpeg', '.jpg')):
         AssetTemp=pygame.image.load(os.path.join(IconDirectory, icon))
-        Asset[f"Icon-{icon[0: -4]}"] = pygame.transform.scale(AssetTemp, (50, 50))
-
+        if icon[0: -4] != "WarningIcon":
+            Asset[f"Icon-{icon[0: -4]}"] = pygame.transform.scale(AssetTemp, (50, 50))
+        else:
+            Asset[f"Icon-{icon[0: -4]}"] = pygame.transform.scale(AssetTemp, (70, 70))
 for video in os.listdir(VideoDirectory):
     if video.lower().endswith(('.mp4')):
         Asset[f"Video-{video[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
@@ -458,11 +460,27 @@ class ErrorMessage:
 
     pygame.mixer.music.load(os.path.join(SoundDirectory, 'Chord.wav'))
 
-    def __init__(self, x, y, screen, title="", buttonLabel="OK", function="", functionArguments=[]):
+    def __init__(self, x, y, screen, title="", buttonLabel="OK", message="This is a warning message.", function="", functionArguments=[]):
+        self.x = x
+        self.y = y
         self.windowWeight=400
         self.windowHeight=200
-        self.ErrorMessageWindow = Window(x, y, self.windowWeight, self.windowHeight, screen, title)
-        self.ErrorMessageButton = Button(x=(x+self.windowWeight/2), y=(y+self.windowHeight), screen=screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
+        self.color = (0,0,0)
+        self.screen = screen
+        self.message = f"{str(message)} "
+        print(len(message))
+        print(message)
+        if len(message) >= 120:
+            raise TypeError('Message longer than 120 characters')
+        elif len(message) >= 90:
+            self.message = [self.message[0: 30], self.message[30: 60], self.message[60: 90], self.message[90: -1]]
+        elif len(message) >= 60:
+            self.message = [self.message[0: 30], self.message[30: 60], self.message[60: -1]]
+        elif len(message) >= 30: 
+            self.message = [self.message[0: 30], self.message[30: -1]]
+
+        self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
+        self.ErrorMessageButton = Button(x=(self.x+self.windowWeight/2), y=(self.y+self.windowHeight), screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[])
         self.WarningShown = False
         self.SoundPlayed = False
 
@@ -474,8 +492,6 @@ class ErrorMessage:
             self.ErrorMessageWindow.checkPress(event)
             self.ErrorMessageButton.checkPress(event)
 
-            print(self.ErrorMessageButton.checkPress(event))
-
             if self.ErrorMessageButton.checkPress(event) == True:
                 self.WarningShown = False
                 self.ErrorMessageButton.changeToggle(False)
@@ -484,6 +500,20 @@ class ErrorMessage:
         if self.WarningShown == True:
             self.ErrorMessageWindow.render()
             self.ErrorMessageButton.render()
+            TextX=self.x+90
+            TextY=self.y+42
+            if type(self.message) == list and len(self.message) >= 4:
+                GenerateText(size=normalfontsize, text=self.message[3], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+96, window=self.screen)
+            if type(self.message) == list and len(self.message) >= 3:
+                GenerateText(size=normalfontsize, text=self.message[2], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+64, window=self.screen)
+            if type(self.message) == list and len(self.message) >= 2:
+                GenerateText(size=normalfontsize, text=self.message[1], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+32, window=self.screen)
+            if type(self.message) != list:
+                GenerateText(size=normalfontsize, text=self.message, color=(0, 0, 0), font=normalfontstyle ,x=TextX, y=TextY, window=self.screen)
+            else:
+                GenerateText(size=normalfontsize, text=self.message[0], color=(0, 0, 0), font=normalfontstyle ,x=TextX, y=TextY, window=self.screen)
+                
+            self.screen.blit(Asset["Icon-WarningIcon"], (self.x+16, self.y+self.y/3))
         
             if self.SoundPlayed == False:
                 pygame.mixer.music.play()
@@ -511,7 +541,7 @@ window={
     }
 
 warnings={
-    'testWarning': ErrorMessage(x=Width/4, y=Height/4, screen=WindowsRG, function=window['explorerWindow'].closeWindow)
+    'testWarning': ErrorMessage(x=Width/4, y=Height/4, screen=WindowsRG, function=window['explorerWindow'].closeWindow, message="mediaplayer.exe has performed an illegal operation and will close...                      Isn't that a shame? Isn't it?")
 }
 
 def playVideo():
