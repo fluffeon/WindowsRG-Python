@@ -82,6 +82,9 @@ Asset['StartMenu'] = pygame.transform.scale(Asset['StartMenu'], (52, 28))
 Asset['ProgramIcon'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'ProgramIcon.png'))
 Asset['ProgramIcon'] = pygame.transform.scale(Asset['ProgramIcon'], (50, 50))
 
+Asset['WindowsRGLogo'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'WindowsRGLogo.png'))
+Asset['WindowsRGLogo'] = pygame.transform.scale(Asset['ProgramIcon'], (688, 160))
+
 
 print(Asset)
 
