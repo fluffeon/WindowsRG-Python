@@ -83,8 +83,11 @@ Asset['ProgramIcon'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets'
 Asset['ProgramIcon'] = pygame.transform.scale(Asset['ProgramIcon'], (50, 50))
 
 Asset['WindowsRGLogo'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'WindowsRGLogo.png'))
+Asset['WindowsRGLogo-Small'] = pygame.transform.scale(Asset['WindowsRGLogo'], (344, 80))
 Asset['WindowsRGLogo'] = pygame.transform.scale(Asset['WindowsRGLogo'], (688, 160))
 
+Asset['WindowsRGStartFlag'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'WindowsRGStartFlag.png'))
+Asset['WindowsRGStartFlag'] = pygame.transform.scale(Asset['WindowsRGStartFlag'], (46, 400))
 
 print(Asset)
 
@@ -1062,6 +1065,10 @@ while True:
         match window['bigWindow'].windowTitle():
             case 'Microsoft Word RG':
                 pass
+            case 'Windows RG Update' | "Windows RG Help":
+                WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
+            case "Order Food":
+                WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
 
     elif window['explorerWindow'].checkIfOpen():
         match window['explorerWindow'].windowTitle():
@@ -1427,6 +1434,8 @@ while True:
             if i != 0:
                 StartingPosition+=40
             GenerateText(size=bigfontsize-8, text=str(MenuOptions[i]), color=color_negro, font=normalfontstyle, x=60, y=StartingPosition, window=WindowsRG)
+
+        WindowsRG.blit(Asset["WindowsRGStartFlag"], (2, 157))
 
     # Barra de Tareas
     pygame.draw.rect(WindowsRG,BarraDeTareas,[0,558,800,42]) 
