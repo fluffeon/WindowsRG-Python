@@ -1110,12 +1110,13 @@ while True:
 
                 if len(FileDirectoryofCustomVideo) == 0:
                     FileDirectoryofCustomVideo = None
+                    button['WMPLoadCustomVideo'].changeToggle(False)
                 elif FileDirectoryofCustomVideo.lower().endswith(('.mp4')):
                     if Asset['Video-Custom'] == None:
                         Asset['Video-Custom'] = Video(FileDirectoryofCustomVideo)
                         button['WMPPlayButton'].changeToggle(False)
                         gameEvent['progressBarXPosition']=300
-                    elif Asset['Video-Custom'].is_playing and FileDirectoryofCustomVideo != None:
+                    elif Asset['Video-Custom'] != None:
                         Asset['Video-Custom'].stop()
                         Asset['Video-Custom'] = Video(FileDirectoryofCustomVideo)
                         button['WMPPlayButton'].changeToggle(False)
