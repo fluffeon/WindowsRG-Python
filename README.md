@@ -6,6 +6,7 @@ Requirements
 - Python 3.10+
 - Pygame Community Edition
 - pygamevideo
+- tk
 
 Extra Features
 --------------
