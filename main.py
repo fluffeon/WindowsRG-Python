@@ -39,6 +39,7 @@ gameEvent={
     'documentsCrash': False,
     'setTimer': False,
     'timer': 0,
+    'openingPaint': False
 }
 
 
@@ -996,21 +997,21 @@ while True:
             print(f"Seleccionaste: {MenuOptions[gameEvent['startMenuSelection']]}")
             match MenuOptions[gameEvent['startMenuSelection']]:
                 case 'Word':
-                    pass
+                    window['bigWindow'].openWindow('Microsoft Word RG')
                 case 'Windows Update':
-                    pass
+                    window['bigWindow'].openWindow('Windows RG Update')
                 case 'Crash':
                     pass
                 case 'Solitaire':
-                    pass
+                    window['bigWindow'].openWindow('Solitaire')
                 case 'Order Food':
-                    pass
+                    window['bigWindow'].openWindow('Order Food')
                 case 'Go Online':
-                    pass
+                    window['bigWindow'].openWindow('Internet Explorer')
                 case 'Paint':
-                    pass
+                    gameEvent['openingPaint'] = True
                 case 'Help':
-                    pass
+                    window['bigWindow'].openWindow('Windows RG Help')
                 case 'Reboot':
                     pass
                 case 'Shut Down':
@@ -1054,7 +1055,12 @@ while True:
     for openWindows in window:
         window[openWindows].render()
 
-    if window['explorerWindow'].checkIfOpen():
+    if window['bigWindow'].checkIfOpen():
+        match window['bigWindow'].windowTitle():
+            case 'Microsoft Word RG':
+                pass
+
+    elif window['explorerWindow'].checkIfOpen():
         match window['explorerWindow'].windowTitle():
             case 'Windows Media Player':
                 pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
