@@ -538,6 +538,60 @@ class Button:
         elif arg == False:
             self.buttonToggle = False
 
+    def changeValue(self, variable, value):
+        match variable:
+            case 'x':
+                self.x = int(value)
+            case 'y':
+                self.y = value
+            case 'w':
+                self.w = value
+            case 'h':
+                self.h = value
+            case default:
+                raise ValueError('Unknown variable or parameter of this button')
+
+        if self.h == None and self.w == None:
+            self.buttonShade1 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+18, self.textheight+4)
+            self.buttonShade2 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+16, self.textheight+2)
+
+            self.button = pygame.Rect(self.textx-6, self.texty, self.textweight+14, self.textheight)
+        else:
+            self.buttonShade2 = pygame.Rect(self.x-2, self.y-2, self.w+2, self.h+2)
+            self.buttonShade1 = pygame.Rect(self.x-2, self.y-2, self.w+4, self.h+4)
+            
+            self.button = pygame.Rect(self.x, self.y, self.w, self.h)
+
+    def returnValue(self, value):
+        match value:
+            case 'x':
+                return self.x
+            case 'y':
+                return self.y
+            case 'w':
+                try:
+                    return self.w
+                except AttributeError:
+                    return None
+            case 'h':
+                try:
+                    return self.h
+                except AttributeError:
+                    return None
+            case 'middleX':
+                self.halftheWeight=int(self.w // 2)
+                return self.x+self.halftheWeight
+            case 'middleY':
+                self.halftheHeight=int(self.h // 2)
+                if excludeTitleBar:
+                    return self.y+self.halftheHeight-32
+                else:
+                    return self.y+self.halftheHeight
+            case 'color':
+                return self.color
+            case default:
+                raise ValueError('Unknown variable or parameter of this button')
+
 def setGameEvent(event, value):
     gameEvent[event]=value
 
@@ -618,6 +672,92 @@ class ErrorMessage:
     def isWarningOpen(self):
         return self.WarningShown
     
+class IconButton:
+    def __init__(self, x, y, w, h, icon, screen, label="", color=(255, 255, 255), holdColor=(150, 150, 150), hoverColor=(230, 230, 230), textColor=(0, 0, 0), function=None, functionArguments=[], font=normalfontstyle, fontSize=normalfontsize-6):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.textColor = textColor
+        self.label = label
+        self.fontSize = fontSize
+        self.font = font
+        self.iconSize = self.h/2
+        self.screen = screen
+        self.iconImageSave = icon
+        self.iconImage = pygame.transform.scale(self.iconImageSave, (self.iconSize, self.iconSize))
+        self.iconButton = Button(
+            x=self.x, y=self.y, 
+            w=self.w, h=self.h, 
+            screen=screen, 
+            shading=False, 
+            color=color, 
+            hoverColor=hoverColor, 
+            holdColor=holdColor, 
+            function=function, 
+            functionArguments=functionArguments)
+
+        self.iconButtonShown = False
+        self.iconButtonEnabled = True
+
+        self.fontstyle=pygame.font.SysFont(self.font, self.fontSize)
+        self.textPosition=(self.x,self.y)
+
+        self.actualtext=self.fontstyle.render(self.label, True, textColor)
+
+    def render(self):
+        if self.iconButtonShown == True:
+            self.iconButton.render()
+            self.screen.blit(self.iconImage, (self.x+self.w/4, self.y+self.h/8))
+
+            self.text_rect = self.actualtext.get_rect(center=(self.x+self.w/2, self.h+self.y-18))
+            self.screen.blit(self.actualtext, self.text_rect) 
+
+    def checkPress(self, event):
+        if self.iconButtonShown == True and self.iconButtonEnabled == True:
+            self.iconButton.checkPress(event)
+
+    def showButton(self):
+        self.iconButtonShown = True
+        self.iconButton.showButton()
+
+    def hideButton(self):
+        self.iconButtonShown = False
+        self.iconButton.hideButton()
+
+    def changeValue(self, variable, value):
+        match variable:
+            case 'x':
+                self.iconButton.changeValue(variable, value)
+                self.x = value
+            case 'y':
+                self.iconButton.changeValue(variable, value)
+                self.y = value
+            case 'w':
+                self.iconButton.changeValue(variable, value)
+                self.w = value
+            case 'h':
+                self.iconButton.changeValue(variable, value)
+                self.h = value
+            case default:
+                raise ValueError('Unknown variable or parameter of this button')
+
+        self.iconSize = self.h/2
+        self.iconImage = pygame.transform.scale(self.iconImageSave, (self.iconSize, self.iconSize))
+
+        self.fontstyle=pygame.font.SysFont(self.font, self.fontSize)
+        self.textPosition=(self.x,self.y)
+
+        self.actualtext=self.fontstyle.render(self.label, True, self.textColor)
+
+    def enableButton(self):
+        self.iconButtonEnabled = True
+        self.iconButton.enableButton()
+
+    def disableButton(self):
+        self.iconButtonEnabled = False
+        self.iconButton.disableButton()
+
 DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
 
@@ -651,19 +791,15 @@ def playVideo():
         Asset['Video-MediaPlayer'].resume()
 
 
+StartButton = Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True)
+
 button={
     # ---------
     #  BUTTONS 
     # ---------
 
     # Start Button
-    'StartButton': Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True),
-
-    # Desktop Icons
-    'MyComputerButton': Button(x=0, y=0, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['My Computer']),
-    'MyDocumentsButton': Button(x=0, y=90, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['My Documents']),
-    'RecycleBinButton': Button(x=0, y=180, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Recycle Bin']),
-    'WindowsMediaPlayerButton': Button(x=0, y=280, w=120, h=90, screen=WindowsRG, shading=False, color=Fondo, hoverColor=DesktopIconHover, holdColor=DesktopIconHold, function=window['explorerWindow'].openWindow, functionArguments=['Windows Media Player']),
+    
 
     # Windows Media Player
     'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=Asset['Video-MediaPlayer'].pause),
@@ -672,6 +808,103 @@ button={
     # Recycle Bin
     'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG)
 }
+
+desktopIcons={
+    'MyComputerButton': Button(
+        x=0, y=0, w=120, h=90, 
+        screen=WindowsRG, 
+        shading=False, 
+        color=Fondo, 
+        hoverColor=DesktopIconHover, 
+        holdColor=DesktopIconHold, 
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=['My Computer']),
+
+    'MyDocumentsButton': Button(
+        x=0, y=90, w=120, h=90, 
+        screen=WindowsRG, 
+        shading=False, 
+        color=Fondo, 
+        hoverColor=DesktopIconHover, 
+        holdColor=DesktopIconHold, 
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=['My Documents']),
+
+    'RecycleBinButton': Button(
+        x=0, y=180, w=120, h=90, 
+        screen=WindowsRG, 
+        shading=False, 
+        color=Fondo, 
+        hoverColor=DesktopIconHover, 
+        holdColor=DesktopIconHold, 
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=['Recycle Bin']),
+
+    'WindowsMediaPlayerButton': Button(
+        x=0, y=280, w=120, h=90, 
+        screen=WindowsRG, 
+        shading=False, 
+        color=Fondo, 
+        hoverColor=DesktopIconHover, 
+        holdColor=DesktopIconHold, 
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=['Windows Media Player'])
+}
+
+myComputerIcons={
+    # Test Button
+    'myComputerIcon1': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 178, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
+        screen=WindowsRG, 
+        label="(A:)",
+        icon=Asset['Icon-FloppyDisk'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=[f"(A:)"]),
+
+    'myComputerIcon2': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 278, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
+        screen=WindowsRG, 
+        label="(N:)",
+        icon=Asset['Icon-HardDisk'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=[f"(C:)"]),
+
+    'myComputerIcon3': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 378, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
+        screen=WindowsRG, 
+        label="(R:)",
+        icon=Asset['Icon-CDDrive'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=[f"(D:)"]),
+}
+
+CDriveIcons={
+    # Test Button
+    'CDriveIcon1': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 178, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=104, h=100, 
+        screen=WindowsRG, 
+        label="My Documents",
+        icon=Asset['Icon-MyDocuments'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=["My Documents"]),
+
+    'CDriveIcon2': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 282, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
+        screen=WindowsRG, 
+        label="Recycle Bin",
+        icon=Asset['Icon-RecycleBin'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=["Recycle Bin"]),
+
+    'CDriveIcon3': IconButton(
+        x=window['explorerWindow'].returnValue('x') + 382, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
+        screen=WindowsRG, 
+        label="Windows",
+        icon=Asset['Icon-Folder'],
+        function=window['explorerWindow'].openWindow, 
+        functionArguments=[f"This is not implemented yet."]),
+}
+
 class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
@@ -718,6 +951,7 @@ class InputBox:
 
 Video=pygame.Surface((644, 400))
 print(button)
+
 while True: 
 
     # stores the (x,y) coordinates into 
@@ -733,20 +967,12 @@ while True:
     WindowsRG.fill(Fondo) 
     
     if gameEvent['windowCurrentlyOpen'] == False:
-        button['MyComputerButton'].showButton()
-        button['MyDocumentsButton'].showButton()
-        button['RecycleBinButton'].showButton()
-        button['WindowsMediaPlayerButton'].showButton()
-
-        button['MyComputerButton'].render()
-        button['MyDocumentsButton'].render()
-        button['RecycleBinButton'].render()
-        button['WindowsMediaPlayerButton'].render()
+        for buttonObject in desktopIcons:
+            desktopIcons[buttonObject].render()
+            desktopIcons[buttonObject].showButton()
     else:
-        button['MyComputerButton'].hideButton()
-        button['MyDocumentsButton'].hideButton()
-        button['RecycleBinButton'].hideButton()
-        button['WindowsMediaPlayerButton'].hideButton()
+        for buttonObject in desktopIcons:
+            desktopIcons[buttonObject].hideButton()
 
 
     WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
@@ -803,9 +1029,20 @@ while True:
             else:
                 gameEvent['timer'] = 0
             
-        
+        StartButton.checkPress(event)
+
         for buttonObject in button:
             button[buttonObject].checkPress(event)
+
+        for buttonObject in desktopIcons:
+            desktopIcons[buttonObject].checkPress(event)
+
+        if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == 'My Computer':
+            for buttonObject in myComputerIcons:
+                myComputerIcons[buttonObject].checkPress(event)
+        elif window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == '(C:)':
+            for buttonObject in CDriveIcons:
+                CDriveIcons[buttonObject].checkPress(event)
 
         for windowObject in window:
             window[windowObject].checkPress(event)
@@ -857,7 +1094,7 @@ while True:
 
                 if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
                     warnings['testWarning'].openWindow()
-            case 'My Computer' | 'My Documents' | 'Recycle Bin':
+            case 'My Computer' | 'My Documents' | 'Recycle Bin' | '(C:)' | '(A:)' | '(D:)':
                 GenerateFrame(
                     x=window['explorerWindow'].returnValue('x') + 12, 
                     y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 12, 
@@ -876,6 +1113,16 @@ while True:
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=WindowSummaryY, 
+                        window=WindowsRG,
+                        bold=True)
+
+                if window['explorerWindow'].windowTitle() == "(A:)" or window['explorerWindow'].windowTitle() == "(D:)":
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="Please Wait...", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY, 
                         window=WindowsRG,
                         bold=True)
 
@@ -907,7 +1154,14 @@ while True:
                         window=WindowsRG,
                         bold=True)
 
-                elif window['explorerWindow'].windowTitle() == "My Documents":
+                    for buttonObject in myComputerIcons:
+                        myComputerIcons[buttonObject].showButton()
+                        myComputerIcons[buttonObject].render()
+                else:
+                    for buttonObject in myComputerIcons:
+                        myComputerIcons[buttonObject].hideButton()
+                
+                if window['explorerWindow'].windowTitle() == "My Documents":
                     if gameEvent['setTimer'] == False:
                         setTimeBomb(3)
 
@@ -1007,7 +1261,15 @@ while True:
                             window=WindowsRG,
                             bold=True)
 
-                elif window['explorerWindow'].windowTitle() == "Recycle Bin":
+                if window['explorerWindow'].windowTitle() == "(C:)":
+                    for buttonObject in CDriveIcons:
+                        CDriveIcons[buttonObject].showButton()
+                        CDriveIcons[buttonObject].render()
+                else:
+                    for buttonObject in CDriveIcons:
+                        CDriveIcons[buttonObject].hideButton()
+                
+                if window['explorerWindow'].windowTitle() == "Recycle Bin":
                     button['EmptyRecycleBin'].showButton()
                     
                     # This is where stuff you don't want gets shoved.
@@ -1116,6 +1378,11 @@ while True:
                     button['EmptyRecycleBin'].render()
 
     else:
+        for buttonObject in myComputerIcons:
+            myComputerIcons[buttonObject].hideButton()
+
+        for buttonObject in CDriveIcons:
+            CDriveIcons[buttonObject].hideButton()
         gameEvent['setTimer'] = False
         gameEvent['timer'] = 10
         gameEvent['documentsCrash'] = False
@@ -1159,7 +1426,7 @@ while True:
     GenerateText(size=normalfontsize-2, text="3:00 AM", color=color_negro, font=normalfontstyle, x=1480, y=1155, window=WindowsRG, center=True)
 
     # Start Button
-    button['StartButton'].render()
+    StartButton.render()
     WindowsRG.blit(Asset["StartMenu"], (8, 564))
     if system() == "Windows":
         GenerateText(size=bigfontsize-18, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True, bold=True)
