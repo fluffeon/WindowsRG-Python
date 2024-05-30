@@ -4,6 +4,13 @@ from platform import system
 from sys import argv
 from time import sleep
 
+import tkinter as tk
+from tkinter import filedialog
+
+root = tk.Tk()
+root.withdraw()
+
+
 Arguments=(argv[1:])
 
 if "--help" in Arguments:
@@ -39,7 +46,8 @@ gameEvent={
     'documentsCrash': False,
     'setTimer': False,
     'timer': 0,
-    'openingPaint': False
+    'openingPaint': False,
+    'customVideoLoaded': False,
 }
 
 
@@ -59,7 +67,9 @@ def setTimeBomb(time):
 pygame.init()
 WindowsRG = pygame.display.set_mode((Width,Height))
 
+
 # Icons
+global Asset
 Asset={}
 
 # Load all assets in Assets folder / Cargar todos los assets en la carpeta Assets
@@ -73,6 +83,19 @@ for icon in os.listdir(IconDirectory):
 for video in os.listdir(VideoDirectory):
     if video.lower().endswith(('.mp4')):
         Asset[f"Video-{video[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
+
+Asset['Video-Custom'] = None
+
+def LoadCustomVideo():
+    try:
+        Filedir = os.path.join(filedialog.askopenfilename())
+        return Filedir
+    except FileNotFoundError:
+        pass
+    except ZeroDivisionError:
+        pass
+    except TypeError:
+        pass
 
 print(Asset)
 
@@ -788,14 +811,33 @@ warnings={
         message="explorer.exe has performed an illegal operation, and will now be closed.")
 }
 
-def playVideo():
-    if Asset['Video-MediaPlayer'].remaining_time == 21833.333333333332:
-        Asset['Video-MediaPlayer'].play()
-    else:
-        Asset['Video-MediaPlayer'].resume()
+def playVideo(status='play'):
+    if gameEvent['customVideoLoaded'] == False:
+        match status:
+            case 'play':
+                if Asset['Video-MediaPlayer'].remaining_time == 21833.333333333332:
+                    Asset['Video-MediaPlayer'].play()
+                else:
+                    Asset['Video-MediaPlayer'].resume()
     
-    if Asset['Video-MediaPlayer'].is_paused:
-        Asset['Video-MediaPlayer'].resume()
+                if Asset['Video-MediaPlayer'].is_paused:
+                    Asset['Video-MediaPlayer'].resume()
+            case 'pause':
+                Asset['Video-MediaPlayer'].pause()
+    else:
+        match status:
+            case 'play':  
+                if Asset['Video-Custom'].remaining_time == Asset['Video-Custom'].duration:
+                    Asset['Video-Custom'].play()
+                else:
+                    Asset['Video-Custom'].resume()
+
+                if Asset['Video-Custom'].is_paused:
+                    Asset['Video-Custom'].resume()
+            case 'pause':
+                Asset['Video-Custom'].pause()
+
+print()
 
 
 StartButton = Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True)
@@ -809,8 +851,9 @@ button={
     
 
     # Windows Media Player
-    'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=Asset['Video-MediaPlayer'].pause),
-    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=Asset['Video-MediaPlayer'].pause),
+    'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=playVideo, functionArgumentsOnToggleDisable=['pause']),
+    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=playVideo, functionArguments=['pause']),
+    'WMPLoadCustomVideo': Button(x=64, y=Height-64, screen=WindowsRG, label='Open', holdButtonifPressed=True),
 
     # Recycle Bin
     'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG)
@@ -956,7 +999,8 @@ class InputBox:
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-Video=pygame.Surface((644, 400))
+VideoFrame=pygame.Surface((644, 400))
+
 print(button)
 
 while True: 
@@ -1057,6 +1101,42 @@ while True:
         for warningDialogObject in warnings:
             warnings[warningDialogObject].checkPress(event)
 
+        if button['WMPLoadCustomVideo'].checkPress(event) == True:
+            try:
+        
+                FileDirectoryofCustomVideo = LoadCustomVideo()
+
+                print(FileDirectoryofCustomVideo)
+
+                if len(FileDirectoryofCustomVideo) == 0:
+                    FileDirectoryofCustomVideo = None
+                elif FileDirectoryofCustomVideo.lower().endswith(('.mp4')):
+                    if Asset['Video-Custom'] == None:
+                        Asset['Video-Custom'] = Video(FileDirectoryofCustomVideo)
+                        button['WMPPlayButton'].changeToggle(False)
+                        gameEvent['progressBarXPosition']=300
+                    elif Asset['Video-Custom'].is_playing and FileDirectoryofCustomVideo != None:
+                        Asset['Video-Custom'].stop()
+                        Asset['Video-Custom'] = Video(FileDirectoryofCustomVideo)
+                        button['WMPPlayButton'].changeToggle(False)
+                        gameEvent['progressBarXPosition']=300
+                    button['WMPLoadCustomVideo'].changeToggle(False)
+                    gameEvent['customVideoLoaded'] = True
+                else:
+                    FileDirectoryofCustomVideo = None
+                    button['WMPLoadCustomVideo'].changeToggle(False)
+            except FileNotFoundError:
+                FileDirectoryofCustomVideo = None
+                button['WMPLoadCustomVideo'].changeToggle(False)
+            except ZeroDivisionError:
+                FileDirectoryofCustomVideo = None
+                button['WMPLoadCustomVideo'].changeToggle(False)
+            except TypeError:
+                FileDirectoryofCustomVideo = None
+                button['WMPLoadCustomVideo'].changeToggle(False)
+
+
+
     # Render all windows that are open
     for openWindows in window:
         window[openWindows].render()
@@ -1074,7 +1154,10 @@ while True:
         match window['explorerWindow'].windowTitle():
             case 'Windows Media Player':
                 pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
-                Asset['Video-MediaPlayer'].draw_to(Video, (0, 0))
+                if gameEvent['customVideoLoaded'] == False:
+                    Asset['Video-MediaPlayer'].draw_to(VideoFrame, (0, 0))
+                else:
+                    Asset['Video-Custom'].draw_to(VideoFrame, (0, 0))
 
                 # Progress Bar
                 pygame.draw.rect(WindowsRG,color_negro,(300, 504, 482, 4))
@@ -1082,8 +1165,10 @@ while True:
 
                 button['WMPPlayButton'].render()
                 button['WMPPauseButton'].render()
+                button['WMPLoadCustomVideo'].render()
                 button['WMPPlayButton'].showButton()
                 button['WMPPauseButton'].showButton()
+                button['WMPLoadCustomVideo'].showButton()
 
                 # Play Button Triangle
                 Triangle_x = 160
@@ -1093,20 +1178,37 @@ while True:
                 # Square
                 pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
 
-                if Asset['Video-MediaPlayer'].is_paused == True:
-                    button['WMPPlayButton'].changeToggle(False)
-                elif Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].is_paused == False:
-                    gameEvent['progressBarXPosition']+=0.3
+                if gameEvent['customVideoLoaded'] == False:
+                    if Asset['Video-MediaPlayer'].is_paused == True:
+                        button['WMPPlayButton'].changeToggle(False)
+                    elif Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].is_paused == False:
+                        gameEvent['progressBarXPosition']+=0.3
 
-                if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
-                    WindowsRG.blit(Video, (136, 58))
+                    if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
+                        WindowsRG.blit(VideoFrame, (136, 58))
 
-                if Asset['Video-MediaPlayer'].remaining_time <= 100:
+                    if Asset['Video-MediaPlayer'].remaining_time <= 100:
                     #window['explorerWindow'].enableCloseButton()
-                    gameEvent['wmpCrash'] = True
-                    Asset['Video-MediaPlayer'].pause()
-                    button['WMPPlayButton'].disableButton()
-                    button['WMPPauseButton'].disableButton()
+                        gameEvent['wmpCrash'] = True
+                        Asset['Video-MediaPlayer'].pause()
+                        button['WMPPlayButton'].disableButton()
+                        button['WMPPauseButton'].disableButton()
+                else:
+                    Asset['Video-MediaPlayer'].stop()
+                    if Asset['Video-Custom'].is_paused == True:
+                        button['WMPPlayButton'].changeToggle(False)
+                    elif Asset['Video-Custom'].is_playing and Asset['Video-Custom'].is_paused == False:
+                        gameEvent['progressBarXPosition']+=0.1
+
+                    if Asset['Video-Custom'].is_playing:
+                        WindowsRG.blit(VideoFrame, (136, 58))
+
+                    if Asset['Video-Custom'].remaining_time <= 100:
+                    #window['explorerWindow'].enableCloseButton()
+                        gameEvent['wmpCrash'] = True
+                        Asset['Video-Custom'].pause()
+                        button['WMPPlayButton'].disableButton()
+                        button['WMPPauseButton'].disableButton()
 
                 if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
                     warnings['testWarning'].openWindow()
@@ -1406,9 +1508,16 @@ while True:
         warnings['documentsCrash'].closeWindow()
         gameEvent['wmpCrash'] = False
         gameEvent['progressBarXPosition']=300
-        Asset['Video-MediaPlayer'].stop()
+        if gameEvent['customVideoLoaded'] == False:
+            Asset['Video-MediaPlayer'].stop()
+        else:
+            Asset['Video-Custom'].stop()
         button['WMPPlayButton'].enableButton()
         button['WMPPauseButton'].enableButton()
+        button['WMPLoadCustomVideo'].enableButton()
+        button['WMPPlayButton'].hideButton()
+        button['WMPPauseButton'].hideButton()
+        button['WMPLoadCustomVideo'].hideButton()
         button['EmptyRecycleBin'].hideButton()
         button['WMPPlayButton'].changeToggle(False)
 
