@@ -83,7 +83,7 @@ Asset['ProgramIcon'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets'
 Asset['ProgramIcon'] = pygame.transform.scale(Asset['ProgramIcon'], (50, 50))
 
 Asset['WindowsRGLogo'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'WindowsRGLogo.png'))
-Asset['WindowsRGLogo'] = pygame.transform.scale(Asset['ProgramIcon'], (688, 160))
+Asset['WindowsRGLogo'] = pygame.transform.scale(Asset['WindowsRGLogo'], (688, 160))
 
 
 print(Asset)
