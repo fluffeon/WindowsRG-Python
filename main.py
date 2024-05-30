@@ -565,7 +565,7 @@ class ErrorMessage:
             self.message = [self.message[0: 30], self.message[30: -1]]
 
         self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
-        self.ErrorMessageButton = Button(x=self.ErrorMessageWindow.returnValue('middleX'), y=self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32, screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=[], bold=True)
+        self.ErrorMessageButton = Button(x=self.ErrorMessageWindow.returnValue('middleX'), y=self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32, screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=functionArguments, bold=True)
         self.WarningShown = False
         self.SoundPlayed = False
 
@@ -622,7 +622,8 @@ DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
 
 window={
-    'explorerWindow': Window(125, 10, Width-130, Height-65, WindowsRG, gameEvent['currentWindow'])
+    'explorerWindow': Window(125, 10, Width-130, Height-65, WindowsRG, gameEvent['currentWindow']),
+    'bigWindow': Window(4, 4, Width-8, Height-50, WindowsRG, gameEvent['currentWindow'])
     }
 
 warnings={
@@ -655,11 +656,6 @@ button={
     #  BUTTONS 
     # ---------
 
-    # Test Buttons
-    'BotonPrueba': Button(x=350, y=286, screen=WindowsRG, label='Search', shading=False, hoverColor=(100, 100, 100)),
-    'BotonPrueba2': Button(x=450, y=286, w=10, h=200, screen=WindowsRG, holdButtonifPressed=True, hoverColor=(100, 100, 100)),
-    'BotonPrueba3': Button(x=600, y=286, screen=WindowsRG, label='Caca', hoverColor=(100, 100, 100)),
-
     # Start Button
     'StartButton': Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True),
 
@@ -671,7 +667,10 @@ button={
 
     # Windows Media Player
     'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=Asset['Video-MediaPlayer'].pause),
-    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=Asset['Video-MediaPlayer'].pause)
+    'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=Asset['Video-MediaPlayer'].pause),
+
+    # Recycle Bin
+    'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG)
 }
 class InputBox:
 
@@ -816,7 +815,7 @@ while True:
 
     # Render all windows that are open
     for openWindows in window:
-        window[windowObject].render()
+        window[openWindows].render()
 
     if window['explorerWindow'].checkIfOpen():
         match window['explorerWindow'].windowTitle():
@@ -881,7 +880,33 @@ while True:
                         bold=True)
 
                 if window['explorerWindow'].windowTitle() == "My Computer":
-                    pass
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="From here you", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="can break your", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+20, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="computer.", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+40, 
+                        window=WindowsRG,
+                        bold=True)
+
                 elif window['explorerWindow'].windowTitle() == "My Documents":
                     if gameEvent['setTimer'] == False:
                         setTimeBomb(3)
@@ -890,6 +915,51 @@ while True:
                         gameEvent['documentsCrash'] = True
                     
                     if gameEvent['documentsCrash']:
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="Boring arse. Get", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="some documents", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+20, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="before you come", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+40, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="in here lookin for", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+60, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=normalfontsize-6, 
+                            text="them.", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY+80, 
+                            window=WindowsRG,
+                            bold=True)
+
                         warnings['documentsCrash'].openWindow()
                     else:
                         GenerateText(
@@ -937,18 +1007,113 @@ while True:
                             window=WindowsRG,
                             bold=True)
 
-                    
-
-                        
                 elif window['explorerWindow'].windowTitle() == "Recycle Bin":
+                    button['EmptyRecycleBin'].showButton()
+                    
+                    # This is where stuff you don't want gets shoved.
                     GenerateText(
-                        size=normalfontsize, 
-                        text="Recycle Bin", 
+                        size=normalfontsize-6, 
+                        text="This is where", 
                         color=color_negro, 
                         font=normalfontstyle, 
-                        x=WindowSummaryX, y=WindowSummaryY, 
+                        x=WindowSummaryX, y=DescriptionSummaryY, 
                         window=WindowsRG,
                         bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="stuff you don't", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+20, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="want gets shoved.", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+40, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    # Also, this is where files that windows has deleted for no reason get sent.
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="Also, this is", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+80, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="where files that", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+100, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="windows has", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+120, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="deleted for no", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+140, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="reason get sent.", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+160, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    # Click the button below to empty the recycle bin.
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="Click the button", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+200, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="below to empty", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+220, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    GenerateText(
+                        size=normalfontsize-6, 
+                        text="the recycle bin.", 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+240, 
+                        window=WindowsRG,
+                        bold=True)
+
+                    button['EmptyRecycleBin'].render()
 
     else:
         gameEvent['setTimer'] = False
@@ -961,6 +1126,7 @@ while True:
         Asset['Video-MediaPlayer'].stop()
         button['WMPPlayButton'].enableButton()
         button['WMPPauseButton'].enableButton()
+        button['EmptyRecycleBin'].hideButton()
         button['WMPPlayButton'].changeToggle(False)
 
     for openWindowDialogues in warnings:
