@@ -112,6 +112,8 @@ Asset['WindowsRGLogo'] = pygame.transform.scale(Asset['WindowsRGLogo'], (688, 16
 Asset['WindowsRGStartFlag'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'WindowsRGStartFlag.png'))
 Asset['WindowsRGStartFlag'] = pygame.transform.scale(Asset['WindowsRGStartFlag'], (46, 400))
 
+Asset['PaintSplash'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'PaintSplashScreen.png'))
+
 print(Asset)
 
 pygame.display.set_caption('Windows RG Build 207')
@@ -1082,25 +1084,25 @@ while True:
 
     WindowsRG.fill(Fondo) 
     
-    if gameEvent['windowCurrentlyOpen'] == False:
+    if gameEvent['windowCurrentlyOpen'] == False and gameEvent['openingPaint'] == False:
         for buttonObject in desktopIcons:
-            desktopIcons[buttonObject].render()
             desktopIcons[buttonObject].showButton()
+            desktopIcons[buttonObject].render()
     else:
         for buttonObject in desktopIcons:
             desktopIcons[buttonObject].hideButton()
 
-
-    WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
-    WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
-    WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
-    WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
+    if gameEvent['openingPaint'] == False:
+        WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
+        WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
+        WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
+        WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
     
-    GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
-    GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
-    GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
-    GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
-    GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
     
     for event in pygame.event.get(): 
           
@@ -1208,6 +1210,15 @@ while True:
     for openWindows in window:
         window[openWindows].render()
 
+    if gameEvent['openingPaint'] == True:
+        WindowsRG.blit(Asset["PaintSplash"], (Width / 2 - 468 / 2, Height / 2 - 276 / 2 - 42 / 2))
+        if gameEvent['timer'] == -2:
+            setTimeBomb(3)
+        elif gameEvent['timer'] == 0:
+            gameEvent['timer'] = -2
+            window['bigWindow'].openWindow('Paint')
+            gameEvent['openingPaint'] = False
+
     if window['bigWindow'].checkIfOpen():
         if window['explorerWindow'].checkIfOpen():
             window['explorerWindow'].closeWindow()
@@ -1232,7 +1243,29 @@ while True:
                         bold=True)
 
                 if window['bigWindow'].windowTitle() == 'Windows RG Help':
-                    pass
+                    GenerateText(
+                        size=normalfontsize, 
+                        text='The updated Windows Help service is so simple to use.', 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+70, 
+                        window=WindowsRG)
+
+                    GenerateText(
+                        size=normalfontsize, 
+                        text='Enter one or more words regarding what you need help on and Windows RG', 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+100, 
+                        window=WindowsRG)
+
+                    GenerateText(
+                        size=normalfontsize, 
+                        text='will be happy to help.', 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+130, 
+                        window=WindowsRG)
 
                 elif window['bigWindow'].windowTitle() == 'Windows RG Update':
                     GenerateText(
