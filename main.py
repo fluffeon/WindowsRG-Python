@@ -44,10 +44,10 @@ gameEvent={
     'progressBarXPosition': 300,
     'wmpCrash': False,
     'documentsCrash': False,
-    'setTimer': False,
-    'timer': 0,
+    'timer': -2,
     'openingPaint': False,
     'customVideoLoaded': False,
+    'orderFoodPage': 0,
 }
 
 
@@ -59,17 +59,16 @@ SoundDirectory=os.path.join(ProgramDirectory, 'Assets', 'Sound')
 import pygame
 from pygamevideo import Video
 
-def setTimeBomb(time):
-    pygame.time.set_timer(pygame.USEREVENT, 1000)
-    gameEvent['timer'] = time
-    gameEvent['setTimer'] = True
+def setTimeBomb(time, millis=1000):
+    if gameEvent['timer'] == -2:
+        gameEvent['timer'] = time
+        pygame.time.set_timer(pygame.USEREVENT, millis)
 
 pygame.init()
 WindowsRG = pygame.display.set_mode((Width,Height))
 
 
 # Icons
-global Asset
 Asset={}
 
 # Load all assets in Assets folder / Cargar todos los assets en la carpeta Assets
@@ -81,7 +80,7 @@ for icon in os.listdir(IconDirectory):
         else:
             Asset[f"Icon-{icon[0: -4]}"] = pygame.transform.scale(AssetTemp, (70, 70))
 for video in os.listdir(VideoDirectory):
-    if video.lower().endswith(('.mp4')):
+    if video.lower().endswith(('.mp4')) and video.lower() == "mediaplayer.mp4":
         Asset[f"Video-{video[0: -4]}"] = Video(os.path.join(VideoDirectory, video))
 
 Asset['Video-Custom'] = None
@@ -333,7 +332,7 @@ class Window:
             case 'middleY':
                 self.halftheHeight=int(self.h // 2)
                 if excludeTitleBar:
-                    return self.y+self.halftheHeight-32
+                    return self.y+self.halftheHeight+32
                 else:
                     return self.y+self.halftheHeight
             case 'color':
@@ -367,6 +366,8 @@ class Button:
     def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, functionOnToggleDisable=None, functionArgumentsOnToggleDisable=[], startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0), bold=False):
         self.x = x
         self.y = y
+        self.h = h
+        self.w = w
         self.color = color
         self.shadingColor1 = shadingColor1
         self.shadingColor2 = shadingColor2
@@ -412,14 +413,12 @@ class Button:
         self.textheight=self.text_rect[3]
 
         # Button
-        if h == None and w == None:
+        if self.h == None and self.w == None:
             self.buttonShade1 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+18, self.textheight+4)
             self.buttonShade2 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+16, self.textheight+2)
 
             self.button = pygame.Rect(self.textx-6, self.texty, self.textweight+14, self.textheight)
         else:
-            self.h = h
-            self.w = w
             self.buttonShade2 = pygame.Rect(self.x-2, self.y-2, self.w+2, self.h+2)
             self.buttonShade1 = pygame.Rect(self.x-2, self.y-2, self.w+4, self.h+4)
             
@@ -580,8 +579,15 @@ class Button:
                 self.h = value
             case default:
                 raise ValueError('Unknown variable or parameter of this button')
-
+        
         if self.h == None and self.w == None:
+            self.text_rect = self.actualtext.get_rect(center=(self.x, self.y)) 
+
+            self.textx=self.text_rect[0]
+            self.texty=self.text_rect[1]
+            self.textweight=self.text_rect[2]
+            self.textheight=self.text_rect[3]
+
             self.buttonShade1 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+18, self.textheight+4)
             self.buttonShade2 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+16, self.textheight+2)
 
@@ -596,34 +602,51 @@ class Button:
         match value:
             case 'x':
                 return self.x
+
             case 'y':
                 return self.y
+
             case 'w':
-                try:
+                if self.w != None:
                     return self.w
-                except AttributeError:
-                    return None
-            case 'h':
-                try:
-                    return self.h
-                except AttributeError:
-                    return None
-            case 'middleX':
-                self.halftheWeight=int(self.w // 2)
-                return self.x+self.halftheWeight
-            case 'middleY':
-                self.halftheHeight=int(self.h // 2)
-                if excludeTitleBar:
-                    return self.y+self.halftheHeight-32
                 else:
-                    return self.y+self.halftheHeight
+                    return self.textweight + 18
+
+            case 'h':
+                if self.h != None:
+                    return self.h
+                else:
+                    return self.textheight + 4
+
+            case 'middleX':
+                if self.w != None:
+                    self.halftheWeight = int(self.w // 2)
+                    return self.x + self.halftheWeight
+                else:
+                    self.halftheWeight = int(self.textweight // 2)
+                    return self.x + self.halftheWeight + 18
+
+            case 'middleY':
+                if self.h != None:
+                    self.halftheWeight = int(self.h // 2)
+                    return self.y + self.halftheHeight
+                else:
+                    self.halftheWeight = int(self.textheight // 2)
+                    return self.y + self.halftheHeight + 4
+
             case 'color':
                 return self.color
             case default:
                 raise ValueError('Unknown variable or parameter of this button')
 
-def setGameEvent(event, value):
-    gameEvent[event]=value
+def setGameEvent(event, value, action="equals"):
+    match action:
+        case "equals":
+            gameEvent[event]=value
+        case "subst":
+            gameEvent[event]-=value
+        case "sum":
+            gameEvent[event]+=value
 
 class ErrorMessage:
 
@@ -856,7 +879,45 @@ button={
     'WMPLoadCustomVideo': Button(x=64, y=Height-64, screen=WindowsRG, label='Open', holdButtonifPressed=True),
 
     # Recycle Bin
-    'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG)
+    'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG),
+
+    # Order Food
+    'OrderFoodOKButton': Button(
+        x=window['bigWindow'].returnValue('middleX'), 
+        y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
+        label="OK", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 1, 'sum')),
+
+    # Food Selection menu
+    'OrderFoodQuitButton': Button(
+        x=window['bigWindow'].returnValue('middleX'), 
+        y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
+        label="Quit", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 6)),
+
+    'OrderFoodTryAgainButton': Button(
+        x=window['bigWindow'].returnValue('middleX'), 
+        y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
+        label="Try Again", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 4)), 
+
+    'FoodSelection1': Button(
+        x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
+        y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) - 40, 
+        label="Order", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 5)),
+    
+    'FoodSelection2': Button(
+        x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
+        y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True), 
+        label="Order", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 5)),
+
+    'FoodSelection3': Button(
+        x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
+        y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) + 40, 
+        label="Order", screen=WindowsRG, 
+        function=setGameEvent, functionArguments=('orderFoodPage', 5))    
 }
 
 desktopIcons={
@@ -1074,11 +1135,12 @@ while True:
             else:
                 gameEvent['startMenuOpen'] = False
 
-        if event.type == pygame.USEREVENT and gameEvent['setTimer'] == True:
+        if event.type == pygame.USEREVENT and gameEvent['timer'] != -2:
             if gameEvent['timer'] > 0:
                 gameEvent['timer'] -= 1
             else:
                 gameEvent['timer'] = 0
+
             
         StartButton.checkPress(event)
 
@@ -1143,15 +1205,347 @@ while True:
         window[openWindows].render()
 
     if window['bigWindow'].checkIfOpen():
+        if window['explorerWindow'].checkIfOpen():
+            window['explorerWindow'].closeWindow()
         match window['bigWindow'].windowTitle():
             case 'Microsoft Word RG':
                 pass
             case 'Windows RG Update' | "Windows RG Help":
                 WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
-            case "Order Food":
-                WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
 
-    elif window['explorerWindow'].checkIfOpen():
+                # Help
+                # The updated Windows Help is so simple to use.
+                # Enter one or more words regarding what you need help on and Windows RG
+                # will be happy to help.
+
+                # Help 2
+                # Please wait while Windows searches the help database
+
+                # Help 3
+                # You searched for:
+                #   [user input]
+                #
+                # Sorry - Windows did not find any matches. However, it found 3 possible
+                # matches.
+                #
+                # [View Possible Matches]
+
+                # After user clicks
+                # Possible matches:
+                #
+                # How do I grow bosnia trees?
+                # Why can fish swim so well?
+                # How do I purchase lime?
+
+                # After user selects an option
+                # Please Wait.
+
+                # Crash (do this two times)
+                # WINDOWS HAS CAUSED A GENERAL PROTECTION
+                # FAULT IN WINHELP.EXE
+                #
+                # PRESS SPACE TO CONTINUE
+
+                # After that, big window turns into pure blue
+
+
+            case "Order Food":
+                WindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
+                WindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
+
+
+                WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
+                
+                # Order Food blurb 1
+                # One of the many advancements in Windows RG 
+                # is the ability to order food online. 
+                # You can order from a huge selection of quality 
+                # goods and they will be delivered to your door 
+                # within 30 minutes. (45 minutes off-peak). 
+                # Click OK to continue
+                match gameEvent['orderFoodPage']:
+                    case 0:
+                        if gameEvent['timer'] != 5 or gameEvent['timer'] != -2:
+                            gameEvent['timer'] = -2
+                        button['OrderFoodOKButton'].showButton()
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="One of the many advancements in Windows RG", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="is the ability to order food online.", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="You can order from a huge selection of quality", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            window=WindowsRG,
+                            bold=True)
+                
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="goods and they will be delivered to your door", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+120, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="within 30 minutes. (45 minutes off-peak)", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+160, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Click OK to continue", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+200, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        button['OrderFoodOKButton'].render()
+                    case 1:
+                        if gameEvent['timer'] == -2:
+                            setTimeBomb(7)
+                        elif gameEvent['timer'] == 0:
+                            gameEvent['timer'] = -2
+                            gameEvent['orderFoodPage'] += 1
+
+                        # Please wait while we connect to our online
+                        # database and retrieve all available meals.
+                        # This may take a few minutes.
+
+                        button['OrderFoodOKButton'].hideButton()
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Please wait while we connect to our online", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+                        
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="database and retrieve all available meals.", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="This may take a few minutes.", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            window=WindowsRG,
+                            bold=True)
+
+                    case 2:
+                        if gameEvent['timer'] == -2:
+                            setTimeBomb(4)
+                        elif gameEvent['timer'] == 0:
+                            gameEvent['timer'] = -2
+                            gameEvent['orderFoodPage'] += 1
+
+                        # Files downloaded, please wait a few seconds
+                        # while we waste your time.
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Files downloaded, please wait a few seconds", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+                        
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="while we waste your time.", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        ButtonXSave=button['OrderFoodQuitButton'].returnValue('x')
+
+                    case 3 | 4:
+                        button['OrderFoodQuitButton'].changeValue('x', ButtonXSave)
+                        button['OrderFoodTryAgainButton'].hideButton()
+                        
+                        if gameEvent['timer'] == -2 and gameEvent['orderFoodPage'] != 4:
+                            setTimeBomb(2)
+                        elif gameEvent['timer'] == 0 and gameEvent['orderFoodPage'] != 4:
+                            gameEvent['timer'] = -2
+                            gameEvent['orderFoodPage'] += 1
+
+                        # Available Food:
+                        # Click the button next to anything you want
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Available Food: ", 
+                            color="#0000FF", 
+                            font=normalfontstyle, 
+                            x=window['bigWindow'].returnValue('x') + 32 + 344, y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 80 / 2, 
+                            window=WindowsRG,
+                            bold=True)
+                        if gameEvent['orderFoodPage'] == 4:
+
+                            button['OrderFoodQuitButton'].showButton()
+
+                            GenerateText(
+                                size=bigfontsize-12, 
+                                text="Click the button next to anything you want:", 
+                                color="#0000FF", 
+                                font=normalfontstyle, 
+                                x=WindowSummaryX, y=WindowSummaryY, 
+                                window=WindowsRG,
+                                bold=True)
+                            
+                            for buttonObject in button:
+                                if buttonObject.lower().startswith(('foodselection')):
+                                    button[buttonObject].showButton()
+                                    button[buttonObject].render()
+                                
+                                # Prune Juice
+                                # Slice Of Ham
+                                # Chickpeas
+
+                                GenerateText(
+                                    size=bigfontsize-12, 
+                                    text="Prune Juice", 
+                                    color="#0000FF", 
+                                    font=normalfontstyle, 
+                                    x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
+                                    y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) - 16 - 42,
+                                    window=WindowsRG,
+                                    bold=True)
+
+                                GenerateText(
+                                    size=bigfontsize-12, 
+                                    text="Slice of Ham", 
+                                    color="#0000FF", 
+                                    font=normalfontstyle, 
+                                    x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
+                                    y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) - 16,
+                                    window=WindowsRG,
+                                    bold=True)
+
+                                GenerateText(
+                                    size=bigfontsize-12, 
+                                    text="Chickpeas", 
+                                    color="#0000FF", 
+                                    font=normalfontstyle, 
+                                    x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
+                                    y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) - 16 + 40,
+                                    window=WindowsRG,
+                                    bold=True)
+                            
+                            button['OrderFoodQuitButton'].render()
+
+                    case 5:
+                        TryAgainButtonPos = ButtonXSave - button['OrderFoodTryAgainButton'].returnValue('w')
+                        QuitButtonPos = ButtonXSave + button['OrderFoodTryAgainButton'].returnValue('w')
+                        button['OrderFoodQuitButton'].changeValue('x', QuitButtonPos)
+                        button['OrderFoodTryAgainButton'].changeValue('x', TryAgainButtonPos)
+                        button['OrderFoodTryAgainButton'].showButton()
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Sorry - the food you selected has sold out", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+                        
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="We will have some more in very shortly!", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Would you like to try again?", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY+120, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        button['OrderFoodTryAgainButton'].render()
+                        button['OrderFoodQuitButton'].render()
+                    
+                    case 6:
+                        if gameEvent['timer'] == -2:
+                            setTimeBomb(5)
+                            for buttonObject in button:
+                                if buttonObject.lower().startswith(('orderfood')) or buttonObject.lower().startswith(('foodselection')):
+                                    button[buttonObject].hideButton()
+                        elif gameEvent['timer'] == 0:
+                            gameEvent['timer'] = -2
+                            window['bigWindow'].closeWindow()
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="Thanks for vising! Come back again soon!", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=WindowSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
+
+                        GenerateText(
+                            size=bigfontsize-12, 
+                            text="There's enough food for everyone!™", 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=800, y=600, 
+                            window=WindowsRG,
+                            bold=True,
+                            center=True)
+
+
+    else:
+        for buttonObject in button:
+            if buttonObject.lower().startswith(('orderfood')) or buttonObject.lower().startswith(('foodselection')):
+                button[buttonObject].hideButton()
+
+        gameEvent['orderFoodPage'] = 0
+    
+    if window['explorerWindow'].checkIfOpen():
+        if window['bigWindow'].checkIfOpen():
+            window['bigWindow'].closeWindow()
+        window['bigWindow'].closeWindow()
         match window['explorerWindow'].windowTitle():
             case 'Windows Media Player':
                 pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
@@ -1164,12 +1558,10 @@ while True:
                 pygame.draw.rect(WindowsRG,color_negro,(300, 504, 482, 4))
                 pygame.draw.rect(WindowsRG,color_negro,(gameEvent['progressBarXPosition'], 490, 30, 30))
 
-                button['WMPPlayButton'].render()
-                button['WMPPauseButton'].render()
-                button['WMPLoadCustomVideo'].render()
-                button['WMPPlayButton'].showButton()
-                button['WMPPauseButton'].showButton()
-                button['WMPLoadCustomVideo'].showButton()
+                for buttonObject in button:
+                    if buttonObject.lower().startswith(('wmp')):
+                        button[buttonObject].render()
+                        button[buttonObject].showButton()
 
                 # Play Button Triangle
                 Triangle_x = 160
@@ -1210,6 +1602,7 @@ while True:
                         Asset['Video-Custom'].pause()
                         button['WMPPlayButton'].disableButton()
                         button['WMPPauseButton'].disableButton()
+                        button['WMPLoadCustomVideo'].disableButton()
 
                 if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
                     warnings['testWarning'].openWindow()
@@ -1281,12 +1674,14 @@ while True:
                         myComputerIcons[buttonObject].hideButton()
                 
                 if window['explorerWindow'].windowTitle() == "My Documents":
-                    if gameEvent['setTimer'] == False:
+                    if gameEvent['timer'] == -2 and gameEvent['documentsCrash'] == False:
                         setTimeBomb(3)
 
-                    if gameEvent['timer'] == 0:
+                    elif gameEvent['timer'] == 0:
                         gameEvent['documentsCrash'] = True
-                    
+                        gameEvent['timer'] = -2
+                
+
                     if gameEvent['documentsCrash']:
                         GenerateText(
                             size=normalfontsize-6, 
@@ -1497,13 +1892,18 @@ while True:
                     button['EmptyRecycleBin'].render()
 
     else:
+            
         for buttonObject in myComputerIcons:
             myComputerIcons[buttonObject].hideButton()
 
         for buttonObject in CDriveIcons:
             CDriveIcons[buttonObject].hideButton()
-        gameEvent['setTimer'] = False
-        gameEvent['timer'] = 10
+
+        for buttonObject in button:
+            if buttonObject.lower().startswith(('wmp')):
+                button[buttonObject].hideButton()
+                button[buttonObject].enableButton()
+
         gameEvent['documentsCrash'] = False
         warnings['testWarning'].closeWindow()
         warnings['documentsCrash'].closeWindow()
@@ -1513,12 +1913,6 @@ while True:
             Asset['Video-MediaPlayer'].stop()
         else:
             Asset['Video-Custom'].stop()
-        button['WMPPlayButton'].enableButton()
-        button['WMPPauseButton'].enableButton()
-        button['WMPLoadCustomVideo'].enableButton()
-        button['WMPPlayButton'].hideButton()
-        button['WMPPauseButton'].hideButton()
-        button['WMPLoadCustomVideo'].hideButton()
         button['EmptyRecycleBin'].hideButton()
         button['WMPPlayButton'].changeToggle(False)
 
