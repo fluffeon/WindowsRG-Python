@@ -18,4 +18,8 @@ Not Planned (for now)
 - Original Windows RG Word
 - Original Windows RG Paint (mine will actually be functional)
 
+Contributors
+------------
+- SabahatUsman0 (Paint)
+
 # Final Assignment of Python course in IITA

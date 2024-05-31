@@ -97,8 +97,6 @@ def LoadCustomVideo():
     except TypeError:
         pass
 
-print(Asset)
-
 Asset['StartMenu'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'StartMenu.png'))
 Asset['StartMenu'] = pygame.transform.scale(Asset['StartMenu'], (52, 28))
 
@@ -113,8 +111,6 @@ Asset['WindowsRGStartFlag'] = pygame.image.load(os.path.join(ProgramDirectory, '
 Asset['WindowsRGStartFlag'] = pygame.transform.scale(Asset['WindowsRGStartFlag'], (46, 400))
 
 Asset['PaintSplash'] = pygame.image.load(os.path.join(ProgramDirectory, 'Assets', 'PaintSplashScreen.png'))
-
-print(Asset)
 
 pygame.display.set_caption('Windows RG Build 207')
 pygame.display.set_icon(Asset['ProgramIcon'])
@@ -135,8 +131,6 @@ color_negro = (0,0,0)
 StartingPosition2=145
 
 MenuOptions=['Word', 'Windows Update', 'Crash', 'Solitaire', 'Order Food', 'Go Online', 'Paint', 'Help', 'Reboot', 'Shut Down']
-
-print(MenuOptions)
 
 # Function to render texts however I like
 def GenerateText(size,text,color,font,x,y,window,bold=False,italic=False,underline=False,strikethrough=False,center=False):
@@ -663,8 +657,6 @@ class ErrorMessage:
         self.color = (0,0,0)
         self.screen = screen
         self.message = f"{str(message)} "
-        print(len(message))
-        print(message)
         if len(message) >= 120:
             raise TypeError('Message longer than 120 characters')
         elif len(message) >= 90:
@@ -862,8 +854,6 @@ def playVideo(status='play'):
                     Asset['Video-Custom'].resume()
             case 'pause':
                 Asset['Video-Custom'].pause()
-
-print()
 
 
 StartButton = Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True)
@@ -1063,12 +1053,92 @@ class InputBox:
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-VideoFrame=pygame.Surface((644, 400))
+class Canvas:
 
-print(button)
+    def __init__(self, x, y, w, h, screen, color=(0, 0, 0), bgColor=(255, 255, 255)):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.screen = screen
+        self.color = color
+        self.bgColor = bgColor
+        self.paint = []
+        self.canvasEnabled = True
+        self.mouseHeld = False
+
+        self.canvasArea = pygame.Rect(self.x, self.y, self.w, self.h)
+
+    def draw(self):
+        if self.canvasEnabled == True:
+            try:
+                if len(self.paint) != 0:
+                    for thing in self.paint:
+                        if thing.left + 4 == self.MouseX and thing.top + 4 == self.MouseY:
+                            return
+                    self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
+                else:
+                    self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
+            except AttributeError:
+                self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
+
+    def checkPress(self, event):
+        if self.canvasEnabled == True:
+            if self.canvasArea.collidepoint(pygame.mouse.get_pos()):
+                self.MousePos=pygame.mouse.get_pos()
+                self.MouseX=self.MousePos[0]
+                self.MouseY=self.MousePos[1]
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouseHeld = False
+                    return
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseHeld = True
+                    self.draw()
+                    
+                if self.mouseHeld == True and event.type == pygame.MOUSEMOTION:
+                    self.draw()
+            else:
+                self.mouseHeld = False
+                return
+
+    def enableCanvas(self):
+        self.canvasEnabled = True
+    
+    def disableCanvas(self):
+        self.canvasEnabled = False
+
+    def clearCanvas(self):
+        self.paint = []
+
+    def render(self):
+        if self.canvasEnabled == True:
+            pygame.draw.rect(self.screen, self.bgColor, self.canvasArea)
+            if len(self.paint) == 0:
+                pass
+            else:
+                for thing in self.paint:
+                    pygame.draw.rect(self.screen, self.color, thing)
+
+    def changeValue(self, variable, value):
+        match variable:
+            case 'color':
+                self.color = value
+
+VideoFrame=pygame.Surface((644, 400))
 
 BigWindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
 BigWindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
+
+PaintCanvas=Canvas(
+    x=window['bigWindow'].returnValue('x') + 12, 
+    y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+    w=window['bigWindow'].returnValue('w') - 24, 
+    h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+    color=(0, 0, 0),
+    screen=WindowsRG
+)
 
 while True: 
 
@@ -1111,7 +1181,6 @@ while True:
               
         # Checks if mouse is clicked
         if event.type == pygame.MOUSEBUTTONUP and gameEvent['startMenuOpen'] == True and gameEvent['startMenuSelection'] in range(0,10):
-            print(f"Seleccionaste: {MenuOptions[gameEvent['startMenuSelection']]}")
             match MenuOptions[gameEvent['startMenuSelection']]:
                 case 'Word':
                     window['bigWindow'].openWindow('Microsoft Word RG')
@@ -1150,6 +1219,8 @@ while True:
             
         StartButton.checkPress(event)
 
+        PaintCanvas.checkPress(event)
+
         for buttonObject in button:
             button[buttonObject].checkPress(event)
 
@@ -1173,9 +1244,7 @@ while True:
             try:
         
                 FileDirectoryofCustomVideo = LoadCustomVideo()
-
-                print(FileDirectoryofCustomVideo)
-
+                
                 if len(FileDirectoryofCustomVideo) == 0:
                     FileDirectoryofCustomVideo = None
                     button['WMPLoadCustomVideo'].changeToggle(False)
@@ -1602,6 +1671,15 @@ while True:
                             window=WindowsRG,
                             bold=True,
                             center=True)
+            case "Paint":
+                PaintCanvas.enableCanvas()
+                GenerateFrame(
+                    x=window['bigWindow'].returnValue('x') + 12, 
+                    y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+                    w=window['bigWindow'].returnValue('w') - 24, 
+                    h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+                    screen=WindowsRG)
+                PaintCanvas.render()
 
 
     else:
@@ -1610,6 +1688,8 @@ while True:
                 button[buttonObject].hideButton()
 
         gameEvent['orderFoodPage'] = 0
+        PaintCanvas.disableCanvas()
+        PaintCanvas.clearCanvas()
     
     if window['explorerWindow'].checkIfOpen():
         if window['bigWindow'].checkIfOpen():
@@ -2025,7 +2105,7 @@ while True:
         GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
     # updates the frames of the game 
-    clock.tick(60)
+    clock.tick(120)
     if "--show-fps" in Arguments:
         GenerateText(size=normalfontsize-2, text=f"{int(clock.get_fps())} FPS", color=color_negro, font=normalfontstyle, x=2, y=2, window=WindowsRG)
     pygame.display.update() 
