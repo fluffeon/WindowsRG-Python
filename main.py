@@ -48,6 +48,7 @@ gameEvent={
     'openingPaint': False,
     'customVideoLoaded': False,
     'orderFoodPage': 0,
+    'windowsUpdatePage': 0
 }
 
 
@@ -1064,6 +1065,9 @@ VideoFrame=pygame.Surface((644, 400))
 
 print(button)
 
+BigWindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
+BigWindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
+
 while True: 
 
     # stores the (x,y) coordinates into 
@@ -1212,6 +1216,41 @@ while True:
                 pass
             case 'Windows RG Update' | "Windows RG Help":
                 WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
+                
+                if window['bigWindow'].windowTitle() == 'Windows RG Help':
+                    BigWindowBlurb='HELP'
+                elif window['bigWindow'].windowTitle() == 'Windows RG Update':
+                    BigWindowBlurb='UPDATE'
+
+                GenerateText(
+                        size=bigfontsize, 
+                        text=BigWindowBlurb, 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+10, 
+                        window=WindowsRG,
+                        bold=True)
+
+                if window['bigWindow'].windowTitle() == 'Windows RG Help':
+                    pass
+
+                elif window['bigWindow'].windowTitle() == 'Windows RG Update':
+                    GenerateText(
+                        size=normalfontsize, 
+                        text='Welcome to the Windows Update Wizard!', 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+70, 
+                        window=WindowsRG)
+
+                    GenerateText(
+                        size=normalfontsize, 
+                        text='Click next to begin', 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+100, 
+                        window=WindowsRG)
+                    
 
                 # Help
                 # The updated Windows Help is so simple to use.
@@ -1250,9 +1289,6 @@ while True:
 
 
             case "Order Food":
-                WindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
-                WindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
-
 
                 WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
                 
@@ -1265,7 +1301,7 @@ while True:
                 # Click OK to continue
                 match gameEvent['orderFoodPage']:
                     case 0:
-                        if gameEvent['timer'] != 5 or gameEvent['timer'] != -2:
+                        if gameEvent['timer'] != 7 or gameEvent['timer'] != -2:
                             gameEvent['timer'] = -2
                         button['OrderFoodOKButton'].showButton()
                         GenerateText(
@@ -1273,7 +1309,7 @@ while True:
                             text="One of the many advancements in Windows RG", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1282,7 +1318,7 @@ while True:
                             text="is the ability to order food online.", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1291,7 +1327,7 @@ while True:
                             text="You can order from a huge selection of quality", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
                 
@@ -1300,7 +1336,7 @@ while True:
                             text="goods and they will be delivered to your door", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+120, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+120, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1309,7 +1345,7 @@ while True:
                             text="within 30 minutes. (45 minutes off-peak)", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+160, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+160, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1318,7 +1354,7 @@ while True:
                             text="Click OK to continue", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+200, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+200, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1341,7 +1377,7 @@ while True:
                             text="Please wait while we connect to our online", 
                             color="#0000FF", 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
@@ -1350,7 +1386,7 @@ while True:
                             text="database and retrieve all available meals.", 
                             color="#0000FF", 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1359,7 +1395,7 @@ while True:
                             text="This may take a few minutes.", 
                             color="#0000FF", 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1378,7 +1414,7 @@ while True:
                             text="Files downloaded, please wait a few seconds", 
                             color="#0000FF", 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
@@ -1387,7 +1423,7 @@ while True:
                             text="while we waste your time.", 
                             color="#0000FF", 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+40, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1423,7 +1459,7 @@ while True:
                                 text="Click the button next to anything you want:", 
                                 color="#0000FF", 
                                 font=normalfontstyle, 
-                                x=WindowSummaryX, y=WindowSummaryY, 
+                                x=BigWindowSummaryX, y=BigWindowSummaryY, 
                                 window=WindowsRG,
                                 bold=True)
                             
@@ -1480,7 +1516,7 @@ while True:
                             text="Sorry - the food you selected has sold out", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
@@ -1489,7 +1525,7 @@ while True:
                             text="We will have some more in very shortly!", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+80, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1498,7 +1534,7 @@ while True:
                             text="Would you like to try again?", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY+120, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY+120, 
                             window=WindowsRG,
                             bold=True)
 
@@ -1520,7 +1556,7 @@ while True:
                             text="Thanks for vising! Come back again soon!", 
                             color=color_negro, 
                             font=normalfontstyle, 
-                            x=WindowSummaryX, y=WindowSummaryY, 
+                            x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
 
