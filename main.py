@@ -599,7 +599,7 @@ while True:
             elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Reboot']:
                 pass
             elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Shutdown']:
-                pass
+                pygame.quit()
 
         if event.type == pygame.MOUSEBUTTONUP:
             
