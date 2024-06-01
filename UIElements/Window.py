@@ -14,7 +14,7 @@ WarningIcon = pygame.transform.scale(AssetTemp, (70, 70))
 if system() == "Windows":
     normalfontsize = 22
     normalfontstyle = 'Arial'
-    bigfontsize = 42
+    bigfontsize = 32
     bigfontstyle = 'Arial'
 else:
     smallfontsize = 22
@@ -26,8 +26,12 @@ else:
 
 class Window:
 
-    closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-19)
-    closeTexttoBlit=closeText.render("X", True, (0, 0, 0))
+    if system() == "Windows":
+        closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-8)
+        closeTexttoBlit=closeText.render("X", True, (0, 0, 0))
+    else:
+        closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-19)
+        closeTexttoBlit=closeText.render("X", True, (0, 0, 0))
 
     def __init__(self, x, y, w, h, screen, title='', color=(204, 204, 204)):
         self.x = x
