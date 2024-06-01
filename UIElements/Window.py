@@ -3,8 +3,13 @@ from .Buttons import Button
 from platform import system
 import os
 
+
 ProgramDirectory=os.path.dirname(__file__,)
 SoundDirectory=os.path.join(ProgramDirectory, '..', 'Assets', 'Sound')
+IconDirectory=os.path.join(ProgramDirectory, '..', 'Assets', 'Icons')
+
+AssetTemp=pygame.image.load(os.path.join(IconDirectory, 'WarningIcon.png'))
+WarningIcon = pygame.transform.scale(AssetTemp, (70, 70))
 
 if system() == "Windows":
     normalfontsize = 22
@@ -272,7 +277,7 @@ class ErrorMessage:
                 self.screen.blit(item, (TextX, TextY+self.separation)) 
                 self.separation+=24
                 
-            self.screen.blit(Asset["Icon-WarningIcon"], (self.x+16, self.y+self.y/3))
+            self.screen.blit(WarningIcon, (self.x+16, self.y+self.y/3))
         
             if self.SoundPlayed == False:
                 pygame.mixer.music.play()

@@ -25,6 +25,159 @@ if "--help" in Arguments:
 # Windows RG Build 204 recreated in Python
 # Recreación en Python para un proyecto final de un curso de Python.
 
+translation = {
+
+    # Desktop and Explorer
+
+    'StartButton': "Start",
+
+    'WindowTitle-MyComputer': "My Computer",
+    'Label-MyComputer': "My Computer",
+
+    'WindowTitle-MyDocuments': "My Documents",
+    'Label-MyDocuments': "My Documents",
+
+    'WindowTitle-RecycleBin': "Recycle Bin",
+    'Label-RecycleBin': "Recycle Bin",
+
+    'Label-StartButton': "Start",
+
+    # My Computer
+    'WindowTitle-ADrive': "(A:)",
+    'Label-ADrive': "(A:)",
+
+    'WindowTitle-CDrive': "(C:)",
+    'Label-CDrive': "(N:)",
+
+    'WindowTitle-DDrive': "(D:)",
+    'Label-DDrive': "(R:)",
+
+    'Description-MyComputer-Line1': "From here you",
+    'Description-MyComputer-Line2': "can break your",
+    'Description-MyComputer-Line3': "computer.",
+
+    'Description-RemovableWait': "Please Wait...",
+
+    'Button-EmptyBin': "Empty Bin",
+
+    # My Documents
+
+    'Description-MyDocuments-Line1': "You boring arse.",
+    'Description-MyDocuments-Line2': "Get some",
+    'Description-MyDocuments-Line3': "documents before",
+    'Description-MyDocuments-Line4': "you come in here",
+    'Description-MyDocuments-Line5': "looking for them.",
+
+    'Description-MyDocumentsCrash-Line1': "Boring arse. Get",
+    'Description-MyDocumentsCrash-Line2': "some documents",
+    'Description-MyDocumentsCrash-Line3': "before you come",
+    'Description-MyDocumentsCrash-Line4': "in here lookin for",
+    'Description-MyDocumentsCrash-Line5': "them.",
+
+    'Subtitle-Help': "HELP",
+    'Subtitle-WindowsUpdate': "UPDATE",
+
+    'Warning-MyDocumentsCrash': "explorer.exe has performed an illegal operation, and will now be closed.",
+
+    # C: Drive
+
+    'Label-WindowsFolder': "Windows",
+
+    # Start Menu options
+
+    'StartMenu-Word': "Word",
+    'StartMenu-WindowsUpdate': "Windows Update",
+    'StartMenu-Crash': "Crash",
+    'StartMenu-Solitaire': "Solitaire",
+    'StartMenu-OrderFood': "Order Food",
+    'StartMenu-GoOnline': "Go Online",
+    'StartMenu-Paint': "Paint",
+    'StartMenu-Help': "Help",
+    'StartMenu-Reboot': "Reboot",
+    'StartMenu-Shutdown': "Shut Down",
+
+    # Recycle Bin
+
+    'Description-RecycleBin-Line1': "This is where",
+    'Description-RecycleBin-Line2': "stuff you don't",
+    'Description-RecycleBin-Line3': "want gets shoved.",
+    'Description-RecycleBin-Line4': "Also, this is",
+    'Description-RecycleBin-Line5': "where files that",
+    'Description-RecycleBin-Line6': "windows has",
+    'Description-RecycleBin-Line7': "deleted for no",
+    'Description-RecycleBin-Line8': "reason get sent.",
+    'Description-RecycleBin-Line9': "Click the button",
+    'Description-RecycleBin-Line10': "below to empty.",
+    'Description-RecycleBin-Line11': "the recycle bin.",
+
+    # Order Food
+
+    'Description-OrderFood1-Line1': "One of the many advancements in Windows RG",
+    'Description-OrderFood1-Line2': "is the ability to order food online.",
+    'Description-OrderFood1-Line3': "You can order from a huge selection of quality",
+    'Description-OrderFood1-Line4': "goods and they will be delivered to your door",
+    'Description-OrderFood1-Line5': "within 30 minutes. (45 minutes off-peak)",
+    'Description-OrderFood1-Line6': "Click OK to continue",
+
+    'Description-OrderFood2-Line1': "Please wait while we connect to our online",
+    'Description-OrderFood2-Line2': "database and retrieve all available meals.",
+    'Description-OrderFood2-Line3': "This may take a few minutes.",
+
+    'Description-OrderFood3-Line1': "Files downloaded, please wait a few seconds",
+    'Description-OrderFood3-Line2': "while we waste your time.",
+
+    'Description-OrderFood4-Line1': "Available Food:",
+    'Description-OrderFood4-Line2': "Click the button next to anything you want:",
+
+    'OrderFood-Food1': "Prune Juice",
+    'OrderFood-Food2': "Slice of Ham",
+    'OrderFood-Food3': "Chickpeas",
+
+    'Button-OrderFoodOrder': "Order",
+  
+    'Button-OrderFoodQuitButton': "Quit",
+    'Button-OrderFoodTryAgainButton': "TryAgain",
+    'Button-OrderFoodOKButton': "OK",
+    
+    'Description-OrderFood5-Line1': "Sorry - the food you selected has sold out",
+    'Description-OrderFood5-Line2': "We will have some more in very shortly!",
+    'Description-OrderFood5-Line3': "Would you like to try again?",
+
+    'Description-OrderFoodQuit-Line1': "Thanks for vising! Come back again soon!",
+    'Description-OrderFoodQuit-Line2': "There's enough food for everyone!™",
+    
+    'Description-RemovableWait': "Please Wait...",
+
+    # Help
+    'Description-Help-Line1': "The updated Windows Help service is so simple to use.",
+    'Description-Help-Line2': "Enter one or more words regarding what you need help on and Windows RG",
+    'Description-Help-Line3': "will be happy to help.",
+
+    # Windows Update
+    'Description-WindowsUpdate-Line1': "Welcome to the Windows Update Wizard!",
+    'Description-WindowsUpdate-Line2': "Click next to begin",
+
+    # Windows
+
+    'WindowTitle-Word': "Microsoft Word RG",
+    'WindowTitle-WindowsUpdate': "Windows RG Update",
+    'WindowTitle-OrderFood': "Order Food",
+    'WindowTitle-Solitaire': "Solitaire",
+    'WindowTitle-Browser': "Internet Explorer",
+    'WindowTitle-Paint': "Paint",
+    'WindowTitle-Help': "Windows RG Help",
+    'WindowTitle-MediaPlayer': "Windows Media Player",
+
+    # Windows Media Player
+    'Button-WMPLoadCustomVideo': "Open",
+
+    'Warning-WMPCrash': "mediaplayer.exe has performed an illegal operation and will close... Isn't that a shame? Isn't it?",
+
+    'Warning-MyDocumentsCrash': "explorer.exe has performed an illegal operation, and will now be closed.",
+    
+}
+
+
 Fondo=(0,153,255)
 BarraDeTareas=(204,204,204)
 Width=800
@@ -129,7 +282,18 @@ color_negro = (0,0,0)
 
 StartingPosition2=145
 
-MenuOptions=['Word', 'Windows Update', 'Crash', 'Solitaire', 'Order Food', 'Go Online', 'Paint', 'Help', 'Reboot', 'Shut Down']
+MenuOptions=[
+    translation['StartMenu-Word'], 
+    translation['StartMenu-WindowsUpdate'], 
+    translation['StartMenu-Crash'], 
+    translation['StartMenu-Solitaire'], 
+    translation['StartMenu-OrderFood'], 
+    translation['StartMenu-GoOnline'], 
+    translation['StartMenu-Paint'], 
+    translation['StartMenu-Help'], 
+    translation['StartMenu-Reboot'], 
+    translation['StartMenu-Shutdown']
+]
 
 # Function to render texts however I like
 def GenerateText(size,text,color,font,x,y,window,bold=False,italic=False,underline=False,strikethrough=False,center=False):
@@ -205,14 +369,15 @@ warnings={
         x=Width/4, y=Height/4, 
         screen=WindowsRG, 
         function=window['explorerWindow'].closeWindow, 
-        message="mediaplayer.exe has performed an illegal operation and will close... Isn't that a shame? Isn't it?"),
+        message=translation['Warning-WMPCrash'],
+        wordWrap=True),
         
     'documentsCrash': ErrorMessage(
         x=window['explorerWindow'].returnValue('middleX') - 400 / 2, 
         y=window['explorerWindow'].returnValue('middleY', excludeTitleBar=True) - 240 / 4, 
         screen=WindowsRG, 
         function=window['explorerWindow'].closeWindow, 
-        message="explorer.exe has performed an illegal operation, and will now be closed.",
+        message=translation['Warning-MyDocumentsCrash'],
         wordWrap=True)
 }
 
@@ -256,47 +421,47 @@ button={
     # Windows Media Player
     'WMPPlayButton': Button(x=136, y=470, w=66, h=66, screen=WindowsRG, holdButtonifPressed=True, function=playVideo, functionOnToggleDisable=playVideo, functionArgumentsOnToggleDisable=['pause']),
     'WMPPauseButton': Button(x=216, y=470, w=66, h=66, screen=WindowsRG, function=playVideo, functionArguments=['pause']),
-    'WMPLoadCustomVideo': Button(x=64, y=Height-64, screen=WindowsRG, label='Open', holdButtonifPressed=True),
+    'WMPLoadCustomVideo': Button(x=64, y=Height-64, screen=WindowsRG, label=translation['Button-WMPLoadCustomVideo'], holdButtonifPressed=True),
 
     # Recycle Bin
-    'EmptyRecycleBin': Button(x=216, y=400, label="Empty Bin", screen=WindowsRG),
+    'EmptyRecycleBin': Button(x=216, y=400, label=translation['Button-EmptyBin'], screen=WindowsRG),
 
     # Order Food
     'OrderFoodOKButton': Button(
         x=window['bigWindow'].returnValue('middleX'), 
         y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
-        label="OK", screen=WindowsRG, 
+        label=translation['Button-OrderFoodOKButton'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 1, 'sum')),
 
     # Food Selection menu
     'OrderFoodQuitButton': Button(
         x=window['bigWindow'].returnValue('middleX'), 
         y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
-        label="Quit", screen=WindowsRG, 
+        label=translation['Button-OrderFoodQuitButton'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 6)),
 
     'OrderFoodTryAgainButton': Button(
         x=window['bigWindow'].returnValue('middleX'), 
         y=window['bigWindow'].returnValue('y') + window['bigWindow'].returnValue('h') - 32, 
-        label="Try Again", screen=WindowsRG, 
+        label=translation['Button-OrderFoodTryAgainButton'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 4)), 
 
     'FoodSelection1': Button(
         x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
         y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) - 40, 
-        label="Order", screen=WindowsRG, 
+        label=translation['Button-OrderFoodOrder'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 5)),
     
     'FoodSelection2': Button(
         x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
         y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True), 
-        label="Order", screen=WindowsRG, 
+        label=translation['Button-OrderFoodOrder'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 5)),
 
     'FoodSelection3': Button(
         x=window['bigWindow'].returnValue('middleX') + window['bigWindow'].returnValue('h') / 2, 
         y=window['bigWindow'].returnValue('middleY', excludeTitleBar = True) + 40, 
-        label="Order", screen=WindowsRG, 
+        label=translation['Button-OrderFoodOrder'], screen=WindowsRG, 
         function=setGameEvent, functionArguments=('orderFoodPage', 5))    
 }
 
@@ -309,7 +474,7 @@ desktopIcons={
         hoverColor=DesktopIconHover, 
         holdColor=DesktopIconHold, 
         function=window['explorerWindow'].openWindow, 
-        functionArguments=['My Computer']),
+        functionArguments=[translation['WindowTitle-MyComputer']]),
 
     'MyDocumentsButton': Button(
         x=0, y=90, w=120, h=90, 
@@ -319,7 +484,7 @@ desktopIcons={
         hoverColor=DesktopIconHover, 
         holdColor=DesktopIconHold, 
         function=window['explorerWindow'].openWindow, 
-        functionArguments=['My Documents']),
+        functionArguments=[translation['WindowTitle-MyDocuments']]),
 
     'RecycleBinButton': Button(
         x=0, y=180, w=120, h=90, 
@@ -329,7 +494,7 @@ desktopIcons={
         hoverColor=DesktopIconHover, 
         holdColor=DesktopIconHold, 
         function=window['explorerWindow'].openWindow, 
-        functionArguments=['Recycle Bin']),
+        functionArguments=[translation['WindowTitle-RecycleBin']]),
 
     'WindowsMediaPlayerButton': Button(
         x=0, y=280, w=120, h=90, 
@@ -339,7 +504,7 @@ desktopIcons={
         hoverColor=DesktopIconHover, 
         holdColor=DesktopIconHold, 
         function=window['explorerWindow'].openWindow, 
-        functionArguments=['Windows Media Player'])
+        functionArguments=[translation['WindowTitle-MediaPlayer']])
 }
 
 myComputerIcons={
@@ -347,26 +512,26 @@ myComputerIcons={
     'myComputerIcon1': IconButton(
         x=window['explorerWindow'].returnValue('x') + 178, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
         screen=WindowsRG, 
-        label="(A:)",
+        label=translation['Label-ADrive'],
         icon=Asset['Icon-FloppyDisk'],
         function=window['explorerWindow'].openWindow, 
-        functionArguments=[f"(A:)"]),
+        functionArguments=[f"{translation['WindowTitle-ADrive']}"]),
 
     'myComputerIcon2': IconButton(
         x=window['explorerWindow'].returnValue('x') + 278, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
         screen=WindowsRG, 
-        label="(N:)",
+        label=translation['Label-CDrive'],
         icon=Asset['Icon-HardDisk'],
         function=window['explorerWindow'].openWindow, 
-        functionArguments=[f"(C:)"]),
+        functionArguments=[f"{translation['WindowTitle-CDrive']}"]),
 
     'myComputerIcon3': IconButton(
         x=window['explorerWindow'].returnValue('x') + 378, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
         screen=WindowsRG, 
-        label="(R:)",
+        label=translation['Label-DDrive'],
         icon=Asset['Icon-CDDrive'],
         function=window['explorerWindow'].openWindow, 
-        functionArguments=[f"(D:)"]),
+        functionArguments=[f"{translation['WindowTitle-DDrive']}"]),
 }
 
 CDriveIcons={
@@ -374,23 +539,23 @@ CDriveIcons={
     'CDriveIcon1': IconButton(
         x=window['explorerWindow'].returnValue('x') + 178, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=104, h=100, 
         screen=WindowsRG, 
-        label="My Documents",
+        label=translation['Label-MyDocuments'],
         icon=Asset['Icon-MyDocuments'],
         function=window['explorerWindow'].openWindow, 
-        functionArguments=["My Documents"]),
+        functionArguments=[translation['WindowTitle-MyDocuments']]),
 
     'CDriveIcon2': IconButton(
         x=window['explorerWindow'].returnValue('x') + 282, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
         screen=WindowsRG, 
-        label="Recycle Bin",
+        label=translation['Label-RecycleBin'],
         icon=Asset['Icon-RecycleBin'],
         function=window['explorerWindow'].openWindow, 
-        functionArguments=["Recycle Bin"]),
+        functionArguments=[translation['WindowTitle-RecycleBin']]),
 
     'CDriveIcon3': IconButton(
         x=window['explorerWindow'].returnValue('x') + 382, y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 14, w=100, h=100, 
         screen=WindowsRG, 
-        label="Windows",
+        label=translation['Label-WindowsFolder'],
         icon=Asset['Icon-Folder'],
         function=window['explorerWindow'].openWindow, 
         functionArguments=[f"This is not implemented yet."]),
@@ -470,7 +635,7 @@ while True:
 
     WindowsRG.fill(Fondo) 
     
-    if gameEvent['windowCurrentlyOpen'] == False and gameEvent['openingPaint'] == False:
+    if gameEvent['windowCurrentlyOpen'] == False and gameEvent['openingPaint'] == False and gameEvent['startMenuOpen'] == False:
         for buttonObject in desktopIcons:
             desktopIcons[buttonObject].showButton()
             desktopIcons[buttonObject].render()
@@ -486,9 +651,9 @@ while True:
         WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
         WindowsRG.blit(Asset["Icon-MediaPlayer"], (33, 280))
     
-        GenerateText(size=normalfontsize-6, text="My Computer", color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
-        GenerateText(size=normalfontsize-6, text="My Documents", color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
-        GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text=translation['Label-MyComputer'], color=color_negro, font=normalfontstyle, x=120, y=150, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text=translation['Label-MyDocuments'], color=color_negro, font=normalfontstyle, x=120, y=330, window=WindowsRG, center=True)
+        GenerateText(size=normalfontsize-6, text=translation['Label-RecycleBin'], color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
         GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
         GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
     else:
@@ -501,30 +666,30 @@ while True:
               
         # Checks if mouse is clicked
         if event.type == pygame.MOUSEBUTTONUP and gameEvent['startMenuOpen'] == True and gameEvent['startMenuSelection'] in range(0,10):
-            match MenuOptions[gameEvent['startMenuSelection']]:
-                case 'Word':
-                    window['bigWindow'].openWindow('Microsoft Word RG')
-                case 'Windows Update':
-                    window['bigWindow'].openWindow('Windows RG Update')
-                case 'Crash':
-                    pass
-                case 'Solitaire':
-                    window['bigWindow'].openWindow('Solitaire')
-                case 'Order Food':
-                    window['bigWindow'].openWindow('Order Food')
-                case 'Go Online':
-                    window['bigWindow'].openWindow('Internet Explorer')
-                case 'Paint':
-                    if window['bigWindow'].windowTitle() != 'Paint':
-                        window['bigWindow'].closeWindow()
-                        window['explorerWindow'].closeWindow()
-                        gameEvent['openingPaint'] = True
-                case 'Help':
-                    window['bigWindow'].openWindow('Windows RG Help')
-                case 'Reboot':
-                    pass
-                case 'Shut Down':
-                    pass
+            
+            if MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Word']:
+                window['bigWindow'].openWindow(translation['WindowTitle-Word'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-WindowsUpdate']:
+                window['bigWindow'].openWindow(translation['WindowTitle-WindowsUpdate'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Crash']:
+                pass
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Solitaire']:
+                window['bigWindow'].openWindow(translation['WindowTitle-Solitaire'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-OrderFood']:
+                window['bigWindow'].openWindow(translation['WindowTitle-OrderFood'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-GoOnline']:
+                window['bigWindow'].openWindow(translation['WindowTitle-Browser'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Paint']:
+                if window['bigWindow'].windowTitle() != translation['WindowTitle-Paint']:
+                    window['bigWindow'].closeWindow()
+                    window['explorerWindow'].closeWindow()
+                    gameEvent['openingPaint'] = True
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Help']:
+                window['bigWindow'].openWindow(translation['WindowTitle-Help'])
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Reboot']:
+                pass
+            elif MenuOptions[gameEvent['startMenuSelection']] == translation['StartMenu-Shutdown']:
+                pass
 
         if event.type == pygame.MOUSEBUTTONUP:
             
@@ -550,10 +715,10 @@ while True:
         for buttonObject in desktopIcons:
             desktopIcons[buttonObject].checkPress(event)
 
-        if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == 'My Computer':
+        if window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == translation['WindowTitle-MyComputer']:
             for buttonObject in myComputerIcons:
                 myComputerIcons[buttonObject].checkPress(event)
-        elif window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == '(C:)':
+        elif window['explorerWindow'].checkIfOpen() and window['explorerWindow'].windowTitle() == translation['WindowTitle-CDrive']:
             for buttonObject in CDriveIcons:
                 CDriveIcons[buttonObject].checkPress(event)
 
@@ -608,69 +773,69 @@ while True:
             setTimeBomb(3)
         elif gameEvent['timer'] == 0:
             gameEvent['timer'] = -2
-            window['bigWindow'].openWindow('Paint')
+            window['bigWindow'].openWindow(translation['WindowTitle-Paint'])
             gameEvent['openingPaint'] = False
 
     if window['bigWindow'].checkIfOpen():
         if window['explorerWindow'].checkIfOpen():
             window['explorerWindow'].closeWindow()
-        match window['bigWindow'].windowTitle():
-            case 'Microsoft Word RG':
-                pass
-            case 'Windows RG Update' | "Windows RG Help":
-                WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
+        
+        if window['bigWindow'].windowTitle() == translation['WindowTitle-Word']:
+            pass
+        elif window['bigWindow'].windowTitle() == translation['WindowTitle-WindowsUpdate'] or window['bigWindow'].windowTitle() == translation['WindowTitle-Help']:
+            WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
                 
-                if window['bigWindow'].windowTitle() == 'Windows RG Help':
-                    BigWindowBlurb='HELP'
-                elif window['bigWindow'].windowTitle() == 'Windows RG Update':
-                    BigWindowBlurb='UPDATE'
+            if window['bigWindow'].windowTitle() == translation['WindowTitle-Help']:
+                BigWindowBlurb=translation['Subtitle-Help']
+            elif window['bigWindow'].windowTitle() == translation['WindowTitle-WindowsUpdate']:
+                BigWindowBlurb=translation['Subtitle-WindowsUpdate']
 
+            GenerateText(
+                    size=bigfontsize, 
+                    text=BigWindowBlurb, 
+                    color=color_negro, 
+                    font=normalfontstyle, 
+                    x=BigWindowSummaryX+10, y=BigWindowSummaryY+10, 
+                    window=WindowsRG,
+                    bold=True)
+
+            if window['bigWindow'].windowTitle() == translation['WindowTitle-Help']:
                 GenerateText(
-                        size=bigfontsize, 
-                        text=BigWindowBlurb, 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=BigWindowSummaryX+10, y=BigWindowSummaryY+10, 
-                        window=WindowsRG,
-                        bold=True)
-
-                if window['bigWindow'].windowTitle() == 'Windows RG Help':
-                    GenerateText(
                         size=normalfontsize, 
-                        text='The updated Windows Help service is so simple to use.', 
+                        text=translation['Description-Help-Line1'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=BigWindowSummaryX+10, y=BigWindowSummaryY+70, 
                         window=WindowsRG)
 
-                    GenerateText(
+                GenerateText(
                         size=normalfontsize, 
-                        text='Enter one or more words regarding what you need help on and Windows RG', 
+                        text=translation['Description-Help-Line2'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=BigWindowSummaryX+10, y=BigWindowSummaryY+100, 
                         window=WindowsRG)
 
-                    GenerateText(
+                GenerateText(
                         size=normalfontsize, 
-                        text='will be happy to help.', 
+                        text=translation['Description-Help-Line3'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=BigWindowSummaryX+10, y=BigWindowSummaryY+130, 
                         window=WindowsRG)
 
-                elif window['bigWindow'].windowTitle() == 'Windows RG Update':
-                    GenerateText(
+            elif window['bigWindow'].windowTitle() == translation['WindowTitle-WindowsUpdate']:
+                GenerateText(
                         size=normalfontsize, 
-                        text='Welcome to the Windows Update Wizard!', 
+                        text=translation['Description-WindowsUpdate-Line1'],
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=BigWindowSummaryX+10, y=BigWindowSummaryY+70, 
                         window=WindowsRG)
 
-                    GenerateText(
+                GenerateText(
                         size=normalfontsize, 
-                        text='Click next to begin', 
+                        text=translation['Description-WindowsUpdate-Line2'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=BigWindowSummaryX+10, y=BigWindowSummaryY+100, 
@@ -713,193 +878,193 @@ while True:
                 # After that, big window turns into pure blue
 
 
-            case "Order Food":
+        elif window['bigWindow'].windowTitle() == translation['WindowTitle-OrderFood']:
 
-                WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
+            WindowsRG.blit(Asset["WindowsRGLogo-Small"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
                 
-                # Order Food blurb 1
-                # One of the many advancements in Windows RG 
-                # is the ability to order food online. 
-                # You can order from a huge selection of quality 
-                # goods and they will be delivered to your door 
-                # within 30 minutes. (45 minutes off-peak). 
-                # Click OK to continue
-                match gameEvent['orderFoodPage']:
-                    case 0:
-                        if gameEvent['timer'] != 7 or gameEvent['timer'] != -2:
-                            gameEvent['timer'] = -2
-                        button['OrderFoodOKButton'].showButton()
-                        GenerateText(
+            # Order Food blurb 1
+            # One of the many advancements in Windows RG 
+            # is the ability to order food online. 
+            # You can order from a huge selection of quality 
+            # goods and they will be delivered to your door 
+            # within 30 minutes. (45 minutes off-peak). 
+            # Click OK to continue
+            match gameEvent['orderFoodPage']:
+                case 0:
+                    if gameEvent['timer'] != 7 or gameEvent['timer'] != -2:
+                        gameEvent['timer'] = -2
+                    button['OrderFoodOKButton'].showButton()
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="One of the many advancements in Windows RG", 
+                            text=translation['Description-OrderFood1-Line1'],
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="is the ability to order food online.", 
+                            text=translation['Description-OrderFood1-Line2'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="You can order from a huge selection of quality", 
+                            text=translation['Description-OrderFood1-Line3'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
                 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="goods and they will be delivered to your door", 
+                            text=translation['Description-OrderFood1-Line4'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+120, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="within 30 minutes. (45 minutes off-peak)", 
+                            text=translation['Description-OrderFood1-Line5'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+160, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Click OK to continue", 
+                            text=translation['Description-OrderFood1-Line6'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+200, 
                             window=WindowsRG,
                             bold=True)
 
-                        button['OrderFoodOKButton'].render()
-                    case 1:
-                        if gameEvent['timer'] == -2:
-                            setTimeBomb(7)
-                        elif gameEvent['timer'] == 0:
-                            gameEvent['timer'] = -2
-                            gameEvent['orderFoodPage'] += 1
+                    button['OrderFoodOKButton'].render()
+                case 1:
+                    if gameEvent['timer'] == -2:
+                        setTimeBomb(7)
+                    elif gameEvent['timer'] == 0:
+                        gameEvent['timer'] = -2
+                        gameEvent['orderFoodPage'] += 1
 
-                        # Please wait while we connect to our online
-                        # database and retrieve all available meals.
-                        # This may take a few minutes.
+                    # Please wait while we connect to our online
+                    # database and retrieve all available meals.
+                    # This may take a few minutes.
 
-                        button['OrderFoodOKButton'].hideButton()
+                    button['OrderFoodOKButton'].hideButton()
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Please wait while we connect to our online", 
+                            text=translation['Description-OrderFood2-Line1'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="database and retrieve all available meals.", 
+                            text=translation['Description-OrderFood2-Line2'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="This may take a few minutes.", 
+                            text=translation['Description-OrderFood2-Line3'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
-                    case 2:
-                        if gameEvent['timer'] == -2:
-                            setTimeBomb(4)
-                        elif gameEvent['timer'] == 0:
-                            gameEvent['timer'] = -2
-                            gameEvent['orderFoodPage'] += 1
+                case 2:
+                    if gameEvent['timer'] == -2:
+                        setTimeBomb(4)
+                    elif gameEvent['timer'] == 0:
+                        gameEvent['timer'] = -2
+                        gameEvent['orderFoodPage'] += 1
 
                         # Files downloaded, please wait a few seconds
                         # while we waste your time.
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Files downloaded, please wait a few seconds", 
+                            text=translation['Description-OrderFood3-Line1'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="while we waste your time.", 
+                            text=translation['Description-OrderFood3-Line2'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
-                        ButtonXSave=button['OrderFoodQuitButton'].returnValue('x')
+                    ButtonXSave=button['OrderFoodQuitButton'].returnValue('x')
 
-                    case 3 | 4:
-                        button['OrderFoodQuitButton'].changeValue('x', ButtonXSave)
-                        button['OrderFoodTryAgainButton'].hideButton()
+                case 3 | 4:
+                    button['OrderFoodQuitButton'].changeValue('x', ButtonXSave)
+                    button['OrderFoodTryAgainButton'].hideButton()
                         
-                        if gameEvent['timer'] == -2 and gameEvent['orderFoodPage'] != 4:
-                            setTimeBomb(2)
-                        elif gameEvent['timer'] == 0 and gameEvent['orderFoodPage'] != 4:
-                            gameEvent['timer'] = -2
-                            gameEvent['orderFoodPage'] += 1
+                    if gameEvent['timer'] == -2 and gameEvent['orderFoodPage'] != 4:
+                        setTimeBomb(2)
+                    elif gameEvent['timer'] == 0 and gameEvent['orderFoodPage'] != 4:
+                        gameEvent['timer'] = -2
+                        gameEvent['orderFoodPage'] += 1
 
-                        # Available Food:
-                        # Click the button next to anything you want
+                    # Available Food:
+                    # Click the button next to anything you want
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Available Food: ", 
+                            text=translation['Description-OrderFood4-Line1'], 
                             color="#0000FF", 
                             font=normalfontstyle, 
                             x=window['bigWindow'].returnValue('x') + 32 + 344, y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 80 / 2, 
                             window=WindowsRG,
                             bold=True)
-                        if gameEvent['orderFoodPage'] == 4:
+                    if gameEvent['orderFoodPage'] == 4:
 
-                            button['OrderFoodQuitButton'].showButton()
+                        button['OrderFoodQuitButton'].showButton()
 
-                            GenerateText(
+                        GenerateText(
                                 size=bigfontsize-12, 
-                                text="Click the button next to anything you want:", 
+                                text=translation['Description-OrderFood4-Line2'], 
                                 color="#0000FF", 
                                 font=normalfontstyle, 
                                 x=BigWindowSummaryX, y=BigWindowSummaryY, 
                                 window=WindowsRG,
                                 bold=True)
                             
-                            for buttonObject in button:
-                                if buttonObject.lower().startswith(('foodselection')):
-                                    button[buttonObject].showButton()
-                                    button[buttonObject].render()
+                        for buttonObject in button:
+                            if buttonObject.lower().startswith(('foodselection')):
+                                button[buttonObject].showButton()
+                                button[buttonObject].render()
                                 
                                 # Prune Juice
                                 # Slice Of Ham
                                 # Chickpeas
 
-                                GenerateText(
+                            GenerateText(
                                     size=bigfontsize-12, 
-                                    text="Prune Juice", 
+                                    text=translation['OrderFood-Food1'], 
                                     color="#0000FF", 
                                     font=normalfontstyle, 
                                     x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
@@ -907,9 +1072,9 @@ while True:
                                     window=WindowsRG,
                                     bold=True)
 
-                                GenerateText(
+                            GenerateText(
                                     size=bigfontsize-12, 
-                                    text="Slice of Ham", 
+                                    text=translation['OrderFood-Food2'], 
                                     color="#0000FF", 
                                     font=normalfontstyle, 
                                     x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
@@ -917,9 +1082,9 @@ while True:
                                     window=WindowsRG,
                                     bold=True)
 
-                                GenerateText(
+                            GenerateText(
                                     size=bigfontsize-12, 
-                                    text="Chickpeas", 
+                                    text=translation['OrderFood-Food3'], 
                                     color="#0000FF", 
                                     font=normalfontstyle, 
                                     x=window['bigWindow'].returnValue('middleX') - window['bigWindow'].returnValue('w') / 2 + 68, 
@@ -927,82 +1092,82 @@ while True:
                                     window=WindowsRG,
                                     bold=True)
                             
-                            button['OrderFoodQuitButton'].render()
+                        button['OrderFoodQuitButton'].render()
 
-                    case 5:
-                        TryAgainButtonPos = ButtonXSave - button['OrderFoodTryAgainButton'].returnValue('w')
-                        QuitButtonPos = ButtonXSave + button['OrderFoodTryAgainButton'].returnValue('w')
-                        button['OrderFoodQuitButton'].changeValue('x', QuitButtonPos)
-                        button['OrderFoodTryAgainButton'].changeValue('x', TryAgainButtonPos)
-                        button['OrderFoodTryAgainButton'].showButton()
+                case 5:
+                    TryAgainButtonPos = ButtonXSave - button['OrderFoodTryAgainButton'].returnValue('w')
+                    QuitButtonPos = ButtonXSave + button['OrderFoodTryAgainButton'].returnValue('w')
+                    button['OrderFoodQuitButton'].changeValue('x', QuitButtonPos)
+                    button['OrderFoodTryAgainButton'].changeValue('x', TryAgainButtonPos)
+                    button['OrderFoodTryAgainButton'].showButton()
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Sorry - the food you selected has sold out", 
+                            text=translation['Description-OrderFood5-Line1'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
                         
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="We will have some more in very shortly!", 
+                            text=translation['Description-OrderFood5-Line2'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Would you like to try again?", 
+                            text=translation['Description-OrderFood5-Line3'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY+120, 
                             window=WindowsRG,
                             bold=True)
 
-                        button['OrderFoodTryAgainButton'].render()
-                        button['OrderFoodQuitButton'].render()
+                    button['OrderFoodTryAgainButton'].render()
+                    button['OrderFoodQuitButton'].render()
                     
-                    case 6:
-                        if gameEvent['timer'] == -2:
-                            setTimeBomb(5)
-                            for buttonObject in button:
-                                if buttonObject.lower().startswith(('orderfood')) or buttonObject.lower().startswith(('foodselection')):
-                                    button[buttonObject].hideButton()
-                        elif gameEvent['timer'] == 0:
-                            gameEvent['timer'] = -2
-                            window['bigWindow'].closeWindow()
+                case 6:
+                    if gameEvent['timer'] == -2:
+                        setTimeBomb(5)
+                        for buttonObject in button:
+                            if buttonObject.lower().startswith(('orderfood')) or buttonObject.lower().startswith(('foodselection')):
+                                button[buttonObject].hideButton()
+                    elif gameEvent['timer'] == 0:
+                        gameEvent['timer'] = -2
+                        window['bigWindow'].closeWindow()
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="Thanks for vising! Come back again soon!", 
+                            text=translation['Description-OrderFoodQuit-Line1'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=BigWindowSummaryX, y=BigWindowSummaryY, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                    GenerateText(
                             size=bigfontsize-12, 
-                            text="There's enough food for everyone!™", 
+                            text=translation['Description-OrderFoodQuit-Line2'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=800, y=600, 
                             window=WindowsRG,
                             bold=True,
                             center=True)
-            case "Paint":
-                PaintCanvas.enableCanvas()
-                GenerateFrame(
-                    x=window['bigWindow'].returnValue('x') + 12, 
-                    y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
-                    w=window['bigWindow'].returnValue('w') - 24, 
-                    h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
-                    screen=WindowsRG)
-                PaintCanvas.render()
+        elif window['bigWindow'].windowTitle() == translation['WindowTitle-Paint']:
+            PaintCanvas.enableCanvas()
+            GenerateFrame(
+                x=window['bigWindow'].returnValue('x') + 12, 
+                y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+                w=window['bigWindow'].returnValue('w') - 24, 
+                h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+                screen=WindowsRG)
+            PaintCanvas.render()
 
 
     else:
@@ -1014,354 +1179,368 @@ while True:
         PaintCanvas.disableCanvas()
         PaintCanvas.clearCanvas()
     
+
     if window['explorerWindow'].checkIfOpen():
+
+        WindowSummaryX=window['explorerWindow'].returnValue('x') + 18
+        WindowSummaryY=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 18
+
+        DescriptionSummaryY=WindowSummaryY + 48
+
         if window['bigWindow'].checkIfOpen():
             window['bigWindow'].closeWindow()
         window['bigWindow'].closeWindow()
-        match window['explorerWindow'].windowTitle():
-            case 'Windows Media Player':
-                pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
-                if gameEvent['customVideoLoaded'] == False:
-                    Asset['Video-MediaPlayer'].draw_to(VideoFrame, (0, 0))
-                else:
-                    Asset['Video-Custom'].draw_to(VideoFrame, (0, 0))
+        
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-MediaPlayer']:
+            pygame.draw.rect(WindowsRG,color_negro,(134, 56, 648, 404))
+            if gameEvent['customVideoLoaded'] == False:
+                Asset['Video-MediaPlayer'].draw_to(VideoFrame, (0, 0))
+            else:
+                Asset['Video-Custom'].draw_to(VideoFrame, (0, 0))
 
-                # Progress Bar
-                pygame.draw.rect(WindowsRG,color_negro,(300, 504, 482, 4))
-                pygame.draw.rect(WindowsRG,color_negro,(gameEvent['progressBarXPosition'], 490, 30, 30))
+            # Progress Bar
+            pygame.draw.rect(WindowsRG,color_negro,(300, 504, 482, 4))
+            pygame.draw.rect(WindowsRG,color_negro,(gameEvent['progressBarXPosition'], 490, 30, 30))
 
-                for buttonObject in button:
-                    if buttonObject.lower().startswith(('wmp')):
-                        button[buttonObject].render()
-                        button[buttonObject].showButton()
+            for buttonObject in button:
+                if buttonObject.lower().startswith(('wmp')):
+                    button[buttonObject].render()
+                    button[buttonObject].showButton()
 
-                # Play Button Triangle
-                Triangle_x = 160
-                Triangle_y = 482
-                pygame.draw.polygon(WindowsRG, color_negro, ((0+Triangle_x, 0+Triangle_y), (20+Triangle_x, 20+Triangle_y), (0+Triangle_x, 40+Triangle_y)))
+            # Play Button Triangle
+            Triangle_x = 160
+            Triangle_y = 482
+            pygame.draw.polygon(WindowsRG, color_negro, ((0+Triangle_x, 0+Triangle_y), (20+Triangle_x, 20+Triangle_y), (0+Triangle_x, 40+Triangle_y)))
 
-                # Square
-                pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
+            # Square
+            pygame.draw.rect(WindowsRG, color_negro, (228, 482, 40, 40))
 
-                if gameEvent['customVideoLoaded'] == False:
-                    if Asset['Video-MediaPlayer'].is_paused == True:
-                        button['WMPPlayButton'].changeToggle(False)
-                    elif Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].is_paused == False:
-                        gameEvent['progressBarXPosition']+=0.3
+            if gameEvent['customVideoLoaded'] == False:
+                if Asset['Video-MediaPlayer'].is_paused == True:
+                    button['WMPPlayButton'].changeToggle(False)
+                elif Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].is_paused == False:
+                    gameEvent['progressBarXPosition']+=0.3
 
-                    if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
-                        WindowsRG.blit(VideoFrame, (136, 58))
+                if Asset['Video-MediaPlayer'].is_playing and Asset['Video-MediaPlayer'].remaining_time < 21833.333333333332:
+                    WindowsRG.blit(VideoFrame, (136, 58))
 
-                    if Asset['Video-MediaPlayer'].remaining_time <= 100:
-                    #window['explorerWindow'].enableCloseButton()
-                        gameEvent['wmpCrash'] = True
-                        Asset['Video-MediaPlayer'].pause()
-                        button['WMPPlayButton'].disableButton()
-                        button['WMPPauseButton'].disableButton()
-                else:
-                    Asset['Video-MediaPlayer'].stop()
-                    if Asset['Video-Custom'].is_paused == True:
-                        button['WMPPlayButton'].changeToggle(False)
-                    elif Asset['Video-Custom'].is_playing and Asset['Video-Custom'].is_paused == False:
-                        gameEvent['progressBarXPosition']+=0.1
+                if Asset['Video-MediaPlayer'].remaining_time <= 100:
+                #window['explorerWindow'].enableCloseButton()
+                    gameEvent['wmpCrash'] = True
+                    Asset['Video-MediaPlayer'].pause()
+                    button['WMPPlayButton'].disableButton()
+                    button['WMPPauseButton'].disableButton()
+            else:
+                Asset['Video-MediaPlayer'].stop()
+                if Asset['Video-Custom'].is_paused == True:
+                    button['WMPPlayButton'].changeToggle(False)
+                elif Asset['Video-Custom'].is_playing and Asset['Video-Custom'].is_paused == False:
+                    gameEvent['progressBarXPosition']+=0.1
 
-                    if Asset['Video-Custom'].is_playing:
-                        WindowsRG.blit(VideoFrame, (136, 58))
+                if Asset['Video-Custom'].is_playing:
+                    WindowsRG.blit(VideoFrame, (136, 58))
 
-                    if Asset['Video-Custom'].remaining_time <= 100:
-                    #window['explorerWindow'].enableCloseButton()
-                        gameEvent['wmpCrash'] = True
-                        Asset['Video-Custom'].pause()
-                        button['WMPPlayButton'].disableButton()
-                        button['WMPPauseButton'].disableButton()
-                        button['WMPLoadCustomVideo'].disableButton()
+                if Asset['Video-Custom'].remaining_time <= 100:
+                #window['explorerWindow'].enableCloseButton()
+                    gameEvent['wmpCrash'] = True
+                    Asset['Video-Custom'].pause()
+                    button['WMPPlayButton'].disableButton()
+                    button['WMPPauseButton'].disableButton()
+                    button['WMPLoadCustomVideo'].disableButton()
 
-                if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
-                    warnings['testWarning'].openWindow()
-            case 'My Computer' | 'My Documents' | 'Recycle Bin' | '(C:)' | '(A:)' | '(D:)':
-                GenerateFrame(
-                    x=window['explorerWindow'].returnValue('x') + 12, 
-                    y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 12, 
-                    w=window['explorerWindow'].returnValue('w') - 24, 
-                    h=window['explorerWindow'].returnValue('h', excludeTitleBar=True) - 24, 
-                    screen=WindowsRG)
+            if warnings['testWarning'].checkIfOpen() == False and gameEvent['wmpCrash'] == True:
+                warnings['testWarning'].openWindow()
+        else:
+            GenerateFrame(
+                x=window['explorerWindow'].returnValue('x') + 12, 
+                y=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+                w=window['explorerWindow'].returnValue('w') - 24, 
+                h=window['explorerWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+                screen=WindowsRG)
+            GenerateText(
+                    size=normalfontsize, 
+                    text=window['explorerWindow'].windowTitle(), 
+                    color=color_negro, 
+                    font=normalfontstyle, 
+                    x=WindowSummaryX, y=WindowSummaryY, 
+                    window=WindowsRG,
+                    bold=True)
 
-                WindowSummaryX=window['explorerWindow'].returnValue('x') + 18
-                WindowSummaryY=window['explorerWindow'].returnValue('y', excludeTitleBar=True) + 18
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-ADrive'] or window['explorerWindow'].windowTitle() == translation['WindowTitle-DDrive']:
+            GenerateText(
+                size=normalfontsize-6, 
+                    text=translation['Description-RemovableWait'], 
+                    color=color_negro, 
+                    font=normalfontstyle, 
+                    x=WindowSummaryX, y=DescriptionSummaryY, 
+                    window=WindowsRG,
+                    bold=True)
 
-                DescriptionSummaryY=WindowSummaryY + 48
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-MyComputer']:
+            GenerateText(
+                size=normalfontsize-6, 
+                text=translation['Description-MyComputer-Line1'], 
+                color=color_negro, 
+                font=normalfontstyle, 
+                x=WindowSummaryX, y=DescriptionSummaryY, 
+                window=WindowsRG,
+                bold=True)
+
+            GenerateText(
+                        size=normalfontsize-6, 
+                        text=translation['Description-MyComputer-Line2'], 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+20, 
+                        window=WindowsRG,
+                        bold=True)
+
+            GenerateText(
+                        size=normalfontsize-6, 
+                        text=translation['Description-MyComputer-Line3'], 
+                        color=color_negro, 
+                        font=normalfontstyle, 
+                        x=WindowSummaryX, y=DescriptionSummaryY+40, 
+                        window=WindowsRG,
+                        bold=True)
+
+            for buttonObject in myComputerIcons:
+                myComputerIcons[buttonObject].showButton()
+                myComputerIcons[buttonObject].render()
+        else:
+            for buttonObject in myComputerIcons:
+                myComputerIcons[buttonObject].hideButton()
+                
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-MyDocuments']:
+            
+            if gameEvent['timer'] == -2 and gameEvent['documentsCrash'] == False:
+                setTimeBomb(3)
+
+            elif gameEvent['timer'] == 0:
+                gameEvent['documentsCrash'] = True
+                gameEvent['timer'] = -2
+                
+
+            if gameEvent['documentsCrash']:
+                GenerateText(
+                            size=normalfontsize-6, 
+                            text=translation['Description-MyDocumentsCrash-Line1'], 
+                            color=color_negro, 
+                            font=normalfontstyle, 
+                            x=WindowSummaryX, y=DescriptionSummaryY, 
+                            window=WindowsRG,
+                            bold=True)
 
                 GenerateText(
-                        size=normalfontsize, 
-                        text=window['explorerWindow'].windowTitle(), 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=WindowSummaryX, y=WindowSummaryY, 
-                        window=WindowsRG,
-                        bold=True)
-
-                if window['explorerWindow'].windowTitle() == "(A:)" or window['explorerWindow'].windowTitle() == "(D:)":
-                    GenerateText(
-                        size=normalfontsize-6, 
-                        text="Please Wait...", 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=WindowSummaryX, y=DescriptionSummaryY, 
-                        window=WindowsRG,
-                        bold=True)
-
-                if window['explorerWindow'].windowTitle() == "My Computer":
-                    GenerateText(
-                        size=normalfontsize-6, 
-                        text="From here you", 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=WindowSummaryX, y=DescriptionSummaryY, 
-                        window=WindowsRG,
-                        bold=True)
-
-                    GenerateText(
-                        size=normalfontsize-6, 
-                        text="can break your", 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=WindowSummaryX, y=DescriptionSummaryY+20, 
-                        window=WindowsRG,
-                        bold=True)
-
-                    GenerateText(
-                        size=normalfontsize-6, 
-                        text="computer.", 
-                        color=color_negro, 
-                        font=normalfontstyle, 
-                        x=WindowSummaryX, y=DescriptionSummaryY+40, 
-                        window=WindowsRG,
-                        bold=True)
-
-                    for buttonObject in myComputerIcons:
-                        myComputerIcons[buttonObject].showButton()
-                        myComputerIcons[buttonObject].render()
-                else:
-                    for buttonObject in myComputerIcons:
-                        myComputerIcons[buttonObject].hideButton()
-                
-                if window['explorerWindow'].windowTitle() == "My Documents":
-                    if gameEvent['timer'] == -2 and gameEvent['documentsCrash'] == False:
-                        setTimeBomb(3)
-
-                    elif gameEvent['timer'] == 0:
-                        gameEvent['documentsCrash'] = True
-                        gameEvent['timer'] = -2
-                
-
-                    if gameEvent['documentsCrash']:
-                        GenerateText(
                             size=normalfontsize-6, 
-                            text="Boring arse. Get", 
-                            color=color_negro, 
-                            font=normalfontstyle, 
-                            x=WindowSummaryX, y=DescriptionSummaryY, 
-                            window=WindowsRG,
-                            bold=True)
-
-                        GenerateText(
-                            size=normalfontsize-6, 
-                            text="some documents", 
+                            text=translation['Description-MyDocumentsCrash-Line2'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+20, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="before you come", 
+                            text=translation['Description-MyDocumentsCrash-Line3'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="in here lookin for", 
+                            text=translation['Description-MyDocumentsCrash-Line4'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+60, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="them.", 
+                            text=translation['Description-MyDocumentsCrash-Line5'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
-                        warnings['documentsCrash'].openWindow()
-                    else:
-                        GenerateText(
+                warnings['documentsCrash'].openWindow()
+            else:
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="You boring arse.", 
+                            text=translation['Description-MyDocuments-Line1'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="Get some", 
+                            text=translation['Description-MyDocuments-Line2'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+20, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="documents before", 
+                            text=translation['Description-MyDocuments-Line3'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+40, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="you come in here", 
+                            text=translation['Description-MyDocuments-Line4'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+60, 
                             window=WindowsRG,
                             bold=True)
 
-                        GenerateText(
+                GenerateText(
                             size=normalfontsize-6, 
-                            text="looking for them.", 
+                            text=translation['Description-MyDocuments-Line5'], 
                             color=color_negro, 
                             font=normalfontstyle, 
                             x=WindowSummaryX, y=DescriptionSummaryY+80, 
                             window=WindowsRG,
                             bold=True)
 
-                if window['explorerWindow'].windowTitle() == "(C:)":
-                    for buttonObject in CDriveIcons:
-                        CDriveIcons[buttonObject].showButton()
-                        CDriveIcons[buttonObject].render()
-                else:
-                    for buttonObject in CDriveIcons:
-                        CDriveIcons[buttonObject].hideButton()
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-CDrive']:
+            GenerateText(
+                    size=normalfontsize, 
+                    text=window['explorerWindow'].windowTitle(), 
+                    color=color_negro, 
+                    font=normalfontstyle, 
+                    x=WindowSummaryX, y=WindowSummaryY, 
+                    window=WindowsRG,
+                    bold=True)
+
+            for buttonObject in CDriveIcons:
+                CDriveIcons[buttonObject].showButton()
+                CDriveIcons[buttonObject].render()
+        else:
+            for buttonObject in CDriveIcons:
+                CDriveIcons[buttonObject].hideButton()
                 
-                if window['explorerWindow'].windowTitle() == "Recycle Bin":
-                    button['EmptyRecycleBin'].showButton()
+        if window['explorerWindow'].windowTitle() == translation['WindowTitle-RecycleBin']:
+            
+            button['EmptyRecycleBin'].showButton()
                     
-                    # This is where stuff you don't want gets shoved.
-                    GenerateText(
+            # This is where stuff you don't want gets shoved.
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="This is where", 
+                        text=translation['Description-RecycleBin-Line1'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="stuff you don't", 
+                        text=translation['Description-RecycleBin-Line2'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+20, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="want gets shoved.", 
+                        text=translation['Description-RecycleBin-Line3'],
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+40, 
                         window=WindowsRG,
                         bold=True)
 
-                    # Also, this is where files that windows has deleted for no reason get sent.
-                    GenerateText(
+            # Also, this is where files that windows has deleted for no reason get sent.
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="Also, this is", 
+                        text=translation['Description-RecycleBin-Line4'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+80, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="where files that", 
+                        text=translation['Description-RecycleBin-Line5'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+100, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="windows has", 
+                        text=translation['Description-RecycleBin-Line6'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+120, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="deleted for no", 
+                        text=translation['Description-RecycleBin-Line7'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+140, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="reason get sent.", 
+                        text=translation['Description-RecycleBin-Line8'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+160, 
                         window=WindowsRG,
                         bold=True)
 
-                    # Click the button below to empty the recycle bin.
+            # Click the button below to empty the recycle bin.
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="Click the button", 
+                        text=translation['Description-RecycleBin-Line9'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+200, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="below to empty", 
+                        text=translation['Description-RecycleBin-Line10'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+220, 
                         window=WindowsRG,
                         bold=True)
 
-                    GenerateText(
+            GenerateText(
                         size=normalfontsize-6, 
-                        text="the recycle bin.", 
+                        text=translation['Description-RecycleBin-Line11'], 
                         color=color_negro, 
                         font=normalfontstyle, 
                         x=WindowSummaryX, y=DescriptionSummaryY+240, 
                         window=WindowsRG,
                         bold=True)
 
-                    button['EmptyRecycleBin'].render()
+            button['EmptyRecycleBin'].render()
+        else:
+            button['EmptyRecycleBin'].hideButton()
 
     else:
             
@@ -1385,7 +1564,6 @@ while True:
             Asset['Video-MediaPlayer'].stop()
         else:
             Asset['Video-Custom'].stop()
-        button['EmptyRecycleBin'].hideButton()
         button['WMPPlayButton'].changeToggle(False)
 
     for openWindowDialogues in warnings:
@@ -1425,9 +1603,9 @@ while True:
     StartButton.render()
     WindowsRG.blit(Asset["StartMenu"], (8, 564))
     if system() == "Windows":
-        GenerateText(size=bigfontsize-18, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True, bold=True)
+        GenerateText(size=bigfontsize-18, text=translation['StartButton'], color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True, bold=True)
     else:
-        GenerateText(size=bigfontsize-6, text="Start", color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
+        GenerateText(size=bigfontsize-6, text=translation['StartButton'], color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
     # updates the frames of the game 
     clock.tick(120)
