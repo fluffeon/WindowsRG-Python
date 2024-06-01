@@ -172,469 +172,10 @@ else:
 
 clock = pygame.time.Clock()
 
-class Frame:
-
-    def __init__(self, x, y, w, h, screen, color=(255, 255, 255), shadeColor=(0, 0, 0)):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.screen = screen
-        self.color = color
-        self.shadeColor = shadeColor
-        
-        self.mainFrameShade = pygame.Rect(x, y, w, h)
-        self.mainFrame = pygame.Rect(x+2, y+2, w-2, h-2)
-
-    def render(self):
-        pygame.draw.rect(self.screen, self.shadeColor, self.mainFrameShade)
-        pygame.draw.rect(self.screen, self.color, self.mainFrame)
-
-
-def GenerateFrame(x, y, w, h, screen, color=(255, 255, 255), shadeColor=(0, 0, 0)):
-    FrameThing=Frame(x=x, y=y, w=w, h=h, screen=screen, color=color, shadeColor=shadeColor)
-    FrameThing.render()
+from UIElements.Frame import Frame
+from UIElements.Frame import GenerateFrame
 
 FrameTest=Frame(x=20, y=20, w=50, h=50, screen=WindowsRG)
-
-class Window:
-
-    closeText=pygame.font.SysFont(normalfontstyle,bigfontsize-19)
-    closeTexttoBlit=closeText.render("X", True, color_negro)
-
-    def __init__(self, x, y, w, h, screen, title='', color=(204, 204, 204)):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.color = color
-        self.black = color_negro
-        self.white = color_blanco
-        self.blue = "#0000FF"
-        self.screen = screen
-
-        self.closeButtonEnabled = True
-        
-        self.title = title
-
-        # Main Window
-        self.window = pygame.Rect(x+2, y+32, w-4, h-34)
-
-        # Frame Decorations
-        self.frame2 = pygame.Rect(x+2, y+2, w-2, h-2) # Black Shading
-        self.frame1 = pygame.Rect(x, y, w, h) # White Shading
-
-        # Title Bar
-        self.bar = pygame.Rect(x+2, y+2, w-4, 28)
-
-        self.closeButtonX = self.x+self.w-28
-        self.closeButtonY = self.y+4
-        self.closeButtonHeight = 24
-        self.closeButtonWeight = 24
-
-        # Close Button
-        self.closeButtonShade2 = pygame.Rect(self.closeButtonX, self.closeButtonY, self.closeButtonWeight-2, self.closeButtonHeight-2)
-        self.closeButtonShade1 = pygame.Rect(self.closeButtonX, self.closeButtonY, self.closeButtonWeight, self.closeButtonHeight)
-
-        self.closeButton = pygame.Rect(self.closeButtonX+2, self.closeButtonY+2, self.closeButtonHeight-4, self.closeButtonWeight-4)
-
-        self.closeButtonHeld = False
-        self.closeButtonPressed = False
-        self.closed = True
-        
-
-    def openWindow(self, title=''):
-        self.closed = False
-        if len(title) != 0:
-            self.title = title
-    
-    def render(self):
-        if self.closed == False:
-            # Frame Decorations
-            pygame.draw.rect(self.screen, self.white, self.frame1)
-            pygame.draw.rect(self.screen, self.black, self.frame2)
-        
-            # Main Window
-            pygame.draw.rect(self.screen, self.color, self.window)
-
-            # Title Bar
-            pygame.draw.rect(self.screen, self.blue, self.bar)
-
-            # Close Button
-            if self.closeButtonHeld == False:
-                pygame.draw.rect(self.screen, self.black, self.closeButtonShade1)
-                pygame.draw.rect(self.screen, self.white, self.closeButtonShade2)
-                pygame.draw.rect(self.screen, self.color, self.closeButton)
-            else:
-                pygame.draw.rect(self.screen, self.white, self.closeButtonShade1)
-                pygame.draw.rect(self.screen, self.black, self.closeButtonShade2)
-                pygame.draw.rect(self.screen, self.color, self.closeButton)
-
-            self.screen.blit(self.closeTexttoBlit, (self.closeButtonX+(self.closeButtonWeight/8), self.y+self.closeButtonHeight/8)) 
-        
-            GenerateText(size=bigfontsize-20, text=self.title, color=self.white, font=normalfontstyle, x=self.x+4, y=self.y+4, window=self.screen, bold=True)
-
-    def checkPress(self, event):
-        if self.closeButtonEnabled == True:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # If the user clicked on the input_box rect.
-                if self.closeButton.collidepoint(event.pos):
-                    self.closeButtonHeld = True
-                else:
-                    self.closeButtonHeld = False
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                if self.closeButtonHeld == True and self.closeButton.collidepoint(event.pos):
-                    self.closeButtonPressed = True
-                    self.closeButtonHeld = False
-                else:
-                    self.closeButtonPressed = False
-                    self.closeButtonHeld = False
-
-            if self.closeButtonPressed == True:
-                self.closed = True
-                self.closeButtonPressed = False
-        
-    def windowTitle(self):
-        return self.title
-
-    def checkIfOpen(self):
-        if self.closed == True:
-            return False
-        else:
-            return True
-
-    def closeWindow(self):
-        self.closed = True
-
-    def returnValue(self, value, excludeTitleBar=False):
-        match value:
-            case 'x':
-                return self.x
-            case 'y':
-                if excludeTitleBar:
-                    return self.y+32
-                else:
-                    return self.y
-            case 'w':
-                return self.w
-            case 'h':
-                if excludeTitleBar:
-                    return self.h-32
-                else:
-                    return self.h
-            case 'middleX':
-                self.halftheWeight=int(self.w // 2)
-                return self.x+self.halftheWeight
-            case 'middleY':
-                self.halftheHeight=int(self.h // 2)
-                if excludeTitleBar:
-                    return self.y+self.halftheHeight+32
-                else:
-                    return self.y+self.halftheHeight
-            case 'color':
-                return self.color
-            case default:
-                raise ValueError('Unknown variable or parameter of this window')
-
-    def changeValue(self, variable, value):
-        match variable:
-            case 'x':
-                self.x = int(value)
-            case 'y':
-                self.y = int(value)
-            case 'w':
-                self.w = int(value)
-            case 'h':
-                self.h = int(value)
-            case 'color':
-                self.color = value
-            case default:
-                raise ValueError('Unknown variable or parameter of this window')
-
-    def disableCloseButton(self):
-        self.closeButtonEnabled = False
-
-    def enableCloseButton(self):
-        self.closeButtonEnabled = True
-
-class Button:
-    
-    def __init__(self, x, y, screen, label='', function=None, functionArguments=[], h=None, w=None, color=(204,204,204), hoverColor=(204,204,204), holdColor=(204,204,204), holdButtonifPressed=False, functionOnToggleDisable=None, functionArgumentsOnToggleDisable=[], startButton=False, shading=True, shadingColor1=(0,0,0), shadingColor2=(255,255,255), textColor=(0,0,0), bold=False):
-        self.x = x
-        self.y = y
-        self.h = h
-        self.w = w
-        self.color = color
-        self.shadingColor1 = shadingColor1
-        self.shadingColor2 = shadingColor2
-        self.textColor = textColor
-        self.hoverColor = hoverColor
-        self.holdColor = holdColor
-        self.screen = screen
-        self.holdButtonifPressed = holdButtonifPressed
-        self.toReturn = False
-
-        # FUNCTION STUFF
-        self.function = function
-        self.functionArguments = functionArguments
-        
-        if holdButtonifPressed == False and functionOnToggleDisable != None:
-            raise KeyError('This function is only available on toggle buttons.')
-        
-        self.functionOnToggleDisable = functionOnToggleDisable
-        self.functionArgumentsOnToggleDisable = functionArgumentsOnToggleDisable
-
-        self.startButton=startButton
-        self.shading=shading
-        self.buttonHover = False
-        if holdButtonifPressed == True:
-            self.buttonToggle = False
-        else:
-            self.buttonToggle = None
-
-        self.label = label
-        self.buttonHidden = False
-
-        self.fontstyle=pygame.font.SysFont(normalfontstyle,25)
-
-        if bold == True:
-            self.fontstyle.bold=True
-
-        self.actualtext=self.fontstyle.render(label, True, self.textColor)
-        self.text_rect = self.actualtext.get_rect(center=(self.x, self.y)) 
-
-        self.textx=self.text_rect[0]
-        self.texty=self.text_rect[1]
-        self.textweight=self.text_rect[2]
-        self.textheight=self.text_rect[3]
-
-        # Button
-        if self.h == None and self.w == None:
-            self.buttonShade1 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+18, self.textheight+4)
-            self.buttonShade2 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+16, self.textheight+2)
-
-            self.button = pygame.Rect(self.textx-6, self.texty, self.textweight+14, self.textheight)
-        else:
-            self.buttonShade2 = pygame.Rect(self.x-2, self.y-2, self.w+2, self.h+2)
-            self.buttonShade1 = pygame.Rect(self.x-2, self.y-2, self.w+4, self.h+4)
-            
-            self.button = pygame.Rect(self.x, self.y, self.w, self.h)
-
-        self.buttonHeld = False
-        self.buttonPressed = False
-        self.buttonEnabled = True
-    
-    def render(self):
-        if self.buttonHidden == False:
-            if self.buttonEnabled == False:
-                pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-            elif self.holdButtonifPressed == True and self.shading == True and self.buttonEnabled == True:
-                if self.buttonHeld == True or self.buttonToggle == True:
-                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
-                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
-                elif self.buttonPressed == False or self.buttonToggle == False:
-                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-            elif self.shading == True:
-                if self.buttonHeld == True and self.buttonEnabled == True:
-                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade1)
-                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade2)
-                elif self.buttonHeld == False:
-                    pygame.draw.rect(self.screen, self.shadingColor1, self.buttonShade1)
-                    pygame.draw.rect(self.screen, self.shadingColor2, self.buttonShade2)
-        
-            if self.buttonHover == True and self.buttonHeld == True and gameEvent['startMenuOpen'] == False and self.buttonEnabled == True:
-                pygame.draw.rect(self.screen, self.holdColor, self.button)
-            elif self.buttonHover == True and gameEvent['startMenuOpen'] == False and self.buttonEnabled == True:
-                pygame.draw.rect(self.screen, self.hoverColor, self.button)
-            else:
-                pygame.draw.rect(self.screen, self.color, self.button)
-            self.screen.blit(self.actualtext, self.text_rect)
-
-    def checkPress(self, event):
-        if self.buttonHidden == False and self.buttonEnabled == True:
-            if self.button.collidepoint(pygame.mouse.get_pos()):
-                self.buttonHover = True
-            else:
-                self.buttonHover = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.button.collidepoint(event.pos) and gameEvent['startMenuOpen'] == False and self.startButton == False:
-                    self.buttonHeld = True
-                elif self.button.collidepoint(event.pos) and self.startButton == True:
-                    self.buttonHeld = True
-                else:
-                    self.buttonHeld = False
-
-            if event.type == pygame.MOUSEBUTTONUP:
-
-                if self.buttonHeld == True and self.button.collidepoint(event.pos):
-                    self.buttonPressed = True
-                    self.buttonHeld = False
-                    if self.startButton == True:
-                        if gameEvent['startMenuOpen'] == False:
-                            self.buttonToggle = False
-                        else:
-                            self.buttonToggle = True
-                    elif self.holdButtonifPressed == True and self.buttonToggle == False:
-                        self.buttonToggle = True
-                    elif self.holdButtonifPressed == True and self.buttonToggle == True:
-                        self.buttonToggle = False
-                else:
-                    if self.startButton == True:
-                        if gameEvent['startMenuOpen'] == False:
-                            self.buttonToggle = False
-                        else:
-                            self.buttonToggle = True
-                    
-                    self.buttonPressed = False
-                    self.buttonHeld = False
-
-            if self.holdButtonifPressed == True:
-                if self.buttonPressed == True:
-                    self.buttonPressed = False
-                    if self.function != None and len(self.functionArguments) != 0 and self.buttonToggle == True:
-                        self.function(*self.functionArguments)
-                        self.toReturn = True
-                    elif self.function != None and self.buttonToggle == True:
-                        self.function()
-                        self.toReturn = True
-
-                    elif self.functionOnToggleDisable != None and len(self.functionArgumentsOnToggleDisable) != 0 and self.buttonToggle == False:
-                        self.functionOnToggleDisable(*self.functionArgumentsOnToggleDisable)
-                        self.toReturn = False
-                    elif self.functionOnToggleDisable != None and self.buttonToggle == False:
-                        self.functionOnToggleDisable()
-                        self.toReturn = False
-                else:
-                    if self.buttonToggle == True:
-                        self.toReturn = True
-                    else:
-                        self.toReturn = False
-            else:
-                if self.buttonPressed == True:
-                    if self.function != None and len(self.functionArguments) != 0:
-                        self.function(*self.functionArguments)
-                    elif self.function != None:
-                        self.function()
-                    self.buttonPressed = False
-                    self.toReturn = True
-                else:
-                    self.toReturn = False
-        else:
-            self.buttonPressed = False
-            self.buttonHeld = False
-            self.buttonHover = False
-
-            self.toReturn = False
-
-        return self.toReturn
-
-    def hideButton(self):
-        self.buttonHidden = True
-        self.buttonHover = False
-        self.buttonHeld = False
-        self.buttonPressed = False
-        if self.holdButtonifPressed == True:
-            self.buttonToggle = False
-        
-    def showButton(self):
-        self.buttonHidden = False
-
-    def enableButton(self):
-        self.buttonEnabled = True
-    
-    def disableButton(self):
-        self.buttonEnabled = False
-        self.buttonHover = False
-        self.buttonHeld = False
-        self.buttonPressed = False
-        if self.holdButtonifPressed == True:
-            self.buttonToggle = False
-
-    def changeToggle(self, arg=None):
-        if self.buttonToggle == True and arg == None:
-            self.buttonToggle = False
-        elif self.buttonToggle == False and arg == None:
-            self.buttonToggle = True
-        elif arg == True:
-            self.buttonToggle = True
-        elif arg == False:
-            self.buttonToggle = False
-
-    def changeValue(self, variable, value):
-        match variable:
-            case 'x':
-                self.x = int(value)
-            case 'y':
-                self.y = value
-            case 'w':
-                self.w = value
-            case 'h':
-                self.h = value
-            case default:
-                raise ValueError('Unknown variable or parameter of this button')
-        
-        if self.h == None and self.w == None:
-            self.text_rect = self.actualtext.get_rect(center=(self.x, self.y)) 
-
-            self.textx=self.text_rect[0]
-            self.texty=self.text_rect[1]
-            self.textweight=self.text_rect[2]
-            self.textheight=self.text_rect[3]
-
-            self.buttonShade1 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+18, self.textheight+4)
-            self.buttonShade2 = pygame.Rect(self.textx-8, self.texty-2, self.textweight+16, self.textheight+2)
-
-            self.button = pygame.Rect(self.textx-6, self.texty, self.textweight+14, self.textheight)
-        else:
-            self.buttonShade2 = pygame.Rect(self.x-2, self.y-2, self.w+2, self.h+2)
-            self.buttonShade1 = pygame.Rect(self.x-2, self.y-2, self.w+4, self.h+4)
-            
-            self.button = pygame.Rect(self.x, self.y, self.w, self.h)
-
-    def returnValue(self, value):
-        match value:
-            case 'x':
-                return self.x
-
-            case 'y':
-                return self.y
-
-            case 'w':
-                if self.w != None:
-                    return self.w
-                else:
-                    return self.textweight + 18
-
-            case 'h':
-                if self.h != None:
-                    return self.h
-                else:
-                    return self.textheight + 4
-
-            case 'middleX':
-                if self.w != None:
-                    self.halftheWeight = int(self.w // 2)
-                    return self.x + self.halftheWeight
-                else:
-                    self.halftheWeight = int(self.textweight // 2)
-                    return self.x + self.halftheWeight + 18
-
-            case 'middleY':
-                if self.h != None:
-                    self.halftheWeight = int(self.h // 2)
-                    return self.y + self.halftheHeight
-                else:
-                    self.halftheWeight = int(self.textheight // 2)
-                    return self.y + self.halftheHeight + 4
-
-            case 'color':
-                return self.color
-            case default:
-                raise ValueError('Unknown variable or parameter of this button')
 
 def setGameEvent(event, value, action="equals"):
     match action:
@@ -719,95 +260,13 @@ class ErrorMessage:
     
     def isWarningOpen(self):
         return self.WarningShown
-    
-class IconButton:
-    def __init__(self, x, y, w, h, icon, screen, label="", color=(255, 255, 255), holdColor=(150, 150, 150), hoverColor=(230, 230, 230), textColor=(0, 0, 0), function=None, functionArguments=[], font=normalfontstyle, fontSize=normalfontsize-6):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.textColor = textColor
-        self.label = label
-        self.fontSize = fontSize
-        self.font = font
-        self.iconSize = self.h/2
-        self.screen = screen
-        self.iconImageSave = icon
-        self.iconImage = pygame.transform.scale(self.iconImageSave, (self.iconSize, self.iconSize))
-        self.iconButton = Button(
-            x=self.x, y=self.y, 
-            w=self.w, h=self.h, 
-            screen=screen, 
-            shading=False, 
-            color=color, 
-            hoverColor=hoverColor, 
-            holdColor=holdColor, 
-            function=function, 
-            functionArguments=functionArguments)
-
-        self.iconButtonShown = False
-        self.iconButtonEnabled = True
-
-        self.fontstyle=pygame.font.SysFont(self.font, self.fontSize)
-        self.textPosition=(self.x,self.y)
-
-        self.actualtext=self.fontstyle.render(self.label, True, textColor)
-
-    def render(self):
-        if self.iconButtonShown == True:
-            self.iconButton.render()
-            self.screen.blit(self.iconImage, (self.x+self.w/4, self.y+self.h/8))
-
-            self.text_rect = self.actualtext.get_rect(center=(self.x+self.w/2, self.h+self.y-18))
-            self.screen.blit(self.actualtext, self.text_rect) 
-
-    def checkPress(self, event):
-        if self.iconButtonShown == True and self.iconButtonEnabled == True:
-            self.iconButton.checkPress(event)
-
-    def showButton(self):
-        self.iconButtonShown = True
-        self.iconButton.showButton()
-
-    def hideButton(self):
-        self.iconButtonShown = False
-        self.iconButton.hideButton()
-
-    def changeValue(self, variable, value):
-        match variable:
-            case 'x':
-                self.iconButton.changeValue(variable, value)
-                self.x = value
-            case 'y':
-                self.iconButton.changeValue(variable, value)
-                self.y = value
-            case 'w':
-                self.iconButton.changeValue(variable, value)
-                self.w = value
-            case 'h':
-                self.iconButton.changeValue(variable, value)
-                self.h = value
-            case default:
-                raise ValueError('Unknown variable or parameter of this button')
-
-        self.iconSize = self.h/2
-        self.iconImage = pygame.transform.scale(self.iconImageSave, (self.iconSize, self.iconSize))
-
-        self.fontstyle=pygame.font.SysFont(self.font, self.fontSize)
-        self.textPosition=(self.x,self.y)
-
-        self.actualtext=self.fontstyle.render(self.label, True, self.textColor)
-
-    def enableButton(self):
-        self.iconButtonEnabled = True
-        self.iconButton.enableButton()
-
-    def disableButton(self):
-        self.iconButtonEnabled = False
-        self.iconButton.disableButton()
 
 DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
+
+from UIElements.Window import Window
+from UIElements.Buttons import Button
+from UIElements.Buttons import IconButton
 
 window={
     'explorerWindow': Window(125, 10, Width-130, Height-65, WindowsRG, gameEvent['currentWindow']),
@@ -856,7 +315,7 @@ def playVideo(status='play'):
                 Asset['Video-Custom'].pause()
 
 
-StartButton = Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True, startButton=True)
+StartButton = Button(x=5, y=564, w=125, h=31, screen=WindowsRG, holdButtonifPressed=True)
 
 button={
     # ---------
@@ -1158,11 +617,13 @@ while True:
         for buttonObject in desktopIcons:
             desktopIcons[buttonObject].showButton()
             desktopIcons[buttonObject].render()
+        gameEvent['timer'] = -2
     else:
         for buttonObject in desktopIcons:
             desktopIcons[buttonObject].hideButton()
 
     if gameEvent['openingPaint'] == False:
+        StartButton.enableButton()
         WindowsRG.blit(Asset["Icon-Computer"], (33, 10))
         WindowsRG.blit(Asset["Icon-MyDocuments"], (33, 100))
         WindowsRG.blit(Asset["Icon-RecycleBin"], (33, 190))
@@ -1173,6 +634,8 @@ while True:
         GenerateText(size=normalfontsize-6, text="Recycle Bin", color=color_negro, font=normalfontstyle, x=120, y=510, window=WindowsRG, center=True)
         GenerateText(size=normalfontsize-6, text="Windows Media", color=color_negro, font=normalfontstyle, x=120, y=685, window=WindowsRG, center=True)
         GenerateText(size=normalfontsize-6, text="Player", color=color_negro, font=normalfontstyle, x=120, y=720, window=WindowsRG, center=True)
+    else:
+        StartButton.disableButton()
     
     for event in pygame.event.get(): 
           
@@ -1195,7 +658,10 @@ while True:
                 case 'Go Online':
                     window['bigWindow'].openWindow('Internet Explorer')
                 case 'Paint':
-                    gameEvent['openingPaint'] = True
+                    if window['bigWindow'].windowTitle() != 'Paint':
+                        window['bigWindow'].closeWindow()
+                        window['explorerWindow'].closeWindow()
+                        gameEvent['openingPaint'] = True
                 case 'Help':
                     window['bigWindow'].openWindow('Windows RG Help')
                 case 'Reboot':
@@ -2068,7 +1534,7 @@ while True:
     for openWindowDialogues in warnings:
         warnings[openWindowDialogues].render()
 
-    if gameEvent['startMenuOpen'] == True:
+    if gameEvent['startMenuOpen'] == True and gameEvent['openingPaint'] == False:
         # Geometria del Menu de Inicio
         pygame.draw.rect(WindowsRG,color_blanco,(0, 157, 356, 402))
         pygame.draw.rect(WindowsRG,color_negro,(2, 157, 354, 402))
@@ -2089,6 +1555,8 @@ while True:
             GenerateText(size=bigfontsize-8, text=str(MenuOptions[i]), color=color_negro, font=normalfontstyle, x=60, y=StartingPosition, window=WindowsRG)
 
         WindowsRG.blit(Asset["WindowsRGStartFlag"], (2, 157))
+    else:
+        StartButton.changeToggle(False)
 
     # Barra de Tareas
     pygame.draw.rect(WindowsRG,BarraDeTareas,[0,558,800,42]) 
