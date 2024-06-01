@@ -1529,7 +1529,7 @@ while True:
         GenerateText(size=bigfontsize-6, text=translation['StartButton'], color=color_negro, font=bigfontstyle, x=185, y=1160, window=WindowsRG, center=True)
 
     # updates the frames of the game 
-    clock.tick(float("inf"))
+    clock.tick(240)
     if "--show-fps" in Arguments:
         GenerateText(size=normalfontsize-2, text=f"{int(clock.get_fps())} FPS", color=color_negro, font=normalfontstyle, x=2, y=2, window=WindowsRG)
     pygame.display.update() 
