@@ -18,8 +18,9 @@ Not Planned (for now)
 - Original Windows RG Word
 - Original Windows RG Paint (mine will actually be functional)
 
-Contributors
-------------
+Contributors / Special Thanks
+-----------------------------
 - SabahatUsman0 (Paint)
+- skrx (Input Box)
 
 # Final Assignment of Python course in IITA
