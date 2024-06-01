@@ -468,9 +468,10 @@ class InputBox:
     def __init__(self, x, y, w, h, text=''):
         # Main
         self.rect = pygame.Rect(x, y, w, h)
-        self.color = COLOR_INACTIVE
+        self.color = (0, 0, 0)
         self.text = text
-        self.txt_surface = FONT.render(text, True, self.color)
+        self.fontstyle=pygame.font.SysFont(normalfontstyle,normalfontsize)
+        self.txt_surface = self.fontstyle.render(text, True, self.color)
         self.active = False
 
     def handle_event(self, event):
@@ -482,19 +483,19 @@ class InputBox:
             else:
                 self.active = False
             # Change the current color of the input box.
-            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+            self.color = (0, 0, 0) if self.active else (150, 150, 150)
 
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
-                    print(self.text)
                     self.text = ''
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
-                    self.text += event.unicode
-                # Re-render the text.
-                self.txt_surface = FONT.render(self.text, True, self.color)
+                    if len(self.text) != 72:
+                        self.text += event.unicode
+            # Re-render the text.
+            self.txt_surface = self.fontstyle.render(self.text, True, self.color)
 
     def update(self):
         # Resize the box if the text is too long.
@@ -502,12 +503,19 @@ class InputBox:
         self.rect.w = width
 
     def draw(self, screen):
-        # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
 
 VideoFrame=pygame.Surface((644, 400))
+
+WordInputBox=InputBox(
+    x=window['bigWindow'].returnValue('x') + 12, 
+    y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+    w=window['bigWindow'].returnValue('w') - 24, 
+    h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+)
 
 BigWindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
 BigWindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
@@ -624,6 +632,9 @@ while True:
             for buttonObject in CDriveIcons:
                 CDriveIcons[buttonObject].checkPress(event)
 
+        if window['bigWindow'].checkIfOpen() and window['bigWindow'].windowTitle() == translation['WindowTitle-Word']:
+            WordInputBox.handle_event(event)
+
         for windowObject in window:
             window[windowObject].checkPress(event)
 
@@ -683,7 +694,15 @@ while True:
             window['explorerWindow'].closeWindow()
         
         if window['bigWindow'].windowTitle() == translation['WindowTitle-Word']:
-            pass
+            GenerateFrame(
+                x=window['bigWindow'].returnValue('x') + 12, 
+                y=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 12, 
+                w=window['bigWindow'].returnValue('w') - 24, 
+                h=window['bigWindow'].returnValue('h', excludeTitleBar=True) - 24, 
+                screen=WindowsRG)
+            
+            WordInputBox.draw(WindowsRG)
+            
         elif window['bigWindow'].windowTitle() == translation['WindowTitle-WindowsUpdate'] or window['bigWindow'].windowTitle() == translation['WindowTitle-Help']:
             WindowsRG.blit(Asset["WindowsRGLogo"], (window['bigWindow'].returnValue('x')+16, window['bigWindow'].returnValue('y', excludeTitleBar=True)+16))
                 
