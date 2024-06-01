@@ -55,7 +55,6 @@ gameEvent={
 ProgramDirectory=os.path.dirname(__file__)
 IconDirectory=os.path.join(ProgramDirectory, 'Assets', 'Icons')
 VideoDirectory=os.path.join(ProgramDirectory, 'Assets', 'Video')
-SoundDirectory=os.path.join(ProgramDirectory, 'Assets', 'Sound')
 
 import pygame
 from pygamevideo import Video
@@ -186,87 +185,15 @@ def setGameEvent(event, value, action="equals"):
         case "sum":
             gameEvent[event]+=value
 
-class ErrorMessage:
+from UIElements.Window import Window
+from UIElements.Window import ErrorMessage
 
-    pygame.mixer.music.load(os.path.join(SoundDirectory, 'Chord.wav'))
-
-    def __init__(self, x, y, screen, title="", buttonLabel="OK", message="This is a warning message.", function="", functionArguments=[]):
-        self.x = x
-        self.y = y
-        self.windowWeight=400
-        self.windowHeight=240
-        self.color = (0,0,0)
-        self.screen = screen
-        self.message = f"{str(message)} "
-        if len(message) >= 120:
-            raise TypeError('Message longer than 120 characters')
-        elif len(message) >= 90:
-            self.message = [self.message[0: 30], self.message[30: 60], self.message[60: 90], self.message[90: -1]]
-        elif len(message) >= 60:
-            self.message = [self.message[0: 30], self.message[30: 60], self.message[60: -1]]
-        elif len(message) >= 30: 
-            self.message = [self.message[0: 30], self.message[30: -1]]
-
-        self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
-        self.ErrorMessageButton = Button(x=self.ErrorMessageWindow.returnValue('middleX'), y=self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32, screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=functionArguments, bold=True)
-        self.WarningShown = False
-        self.SoundPlayed = False
-
-    def checkIfOpen(self):
-        return self.ErrorMessageWindow.checkIfOpen()
-
-    def checkPress(self, event):
-        if self.WarningShown == True:
-            self.ErrorMessageWindow.checkPress(event)
-            self.ErrorMessageButton.checkPress(event)
-
-            if self.ErrorMessageButton.checkPress(event) == True:
-                self.WarningShown = False
-                self.ErrorMessageButton.changeToggle(False)
-
-    def render(self):
-        if self.WarningShown == True:
-            self.ErrorMessageWindow.render()
-            self.ErrorMessageButton.render()
-            TextX=self.ErrorMessageWindow.returnValue('x')+90
-            TextY=self.ErrorMessageWindow.returnValue('y')+42
-            if type(self.message) == list and len(self.message) >= 4:
-                GenerateText(size=normalfontsize, text=self.message[3], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+96, window=self.screen)
-            if type(self.message) == list and len(self.message) >= 3:
-                GenerateText(size=normalfontsize, text=self.message[2], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+64, window=self.screen)
-            if type(self.message) == list and len(self.message) >= 2:
-                GenerateText(size=normalfontsize, text=self.message[1], color=self.color, font=normalfontstyle ,x=TextX, y=TextY+32, window=self.screen)
-            if type(self.message) != list:
-                GenerateText(size=normalfontsize, text=self.message, color=(0, 0, 0), font=normalfontstyle ,x=TextX, y=TextY, window=self.screen)
-            else:
-                GenerateText(size=normalfontsize, text=self.message[0], color=(0, 0, 0), font=normalfontstyle ,x=TextX, y=TextY, window=self.screen)
-                
-            self.screen.blit(Asset["Icon-WarningIcon"], (self.x+16, self.y+self.y/3))
-        
-            if self.SoundPlayed == False:
-                pygame.mixer.music.play()
-                self.SoundPlayed = True
-        else:
-            self.ErrorMessageWindow.closeWindow()
-    
-    def openWindow(self):
-        self.ErrorMessageWindow.openWindow()
-        self.WarningShown = True
-    
-    def closeWindow(self):
-        self.ErrorMessageWindow.closeWindow()
-        self.WarningShown = False
-        self.SoundPlayed = False
-    
-    def isWarningOpen(self):
-        return self.WarningShown
+from UIElements.Buttons import Button
+from UIElements.Buttons import IconButton
+      
 
 DesktopIconHover=(0,153-30,255-30),
 DesktopIconHold=(0,153-60,255-60),
-
-from UIElements.Window import Window
-from UIElements.Buttons import Button
-from UIElements.Buttons import IconButton
 
 window={
     'explorerWindow': Window(125, 10, Width-130, Height-65, WindowsRG, gameEvent['currentWindow']),
@@ -278,14 +205,15 @@ warnings={
         x=Width/4, y=Height/4, 
         screen=WindowsRG, 
         function=window['explorerWindow'].closeWindow, 
-        message="mediaplayer.exe has performed an illegal operation and will close...                      Isn't that a shame? Isn't it?"),
+        message="mediaplayer.exe has performed an illegal operation and will close... Isn't that a shame? Isn't it?"),
         
     'documentsCrash': ErrorMessage(
         x=window['explorerWindow'].returnValue('middleX') - 400 / 2, 
         y=window['explorerWindow'].returnValue('middleY', excludeTitleBar=True) - 240 / 4, 
         screen=WindowsRG, 
         function=window['explorerWindow'].closeWindow, 
-        message="explorer.exe has performed an illegal operation, and will now be closed.")
+        message="explorer.exe has performed an illegal operation, and will now be closed.",
+        wordWrap=True)
 }
 
 def playVideo(status='play'):
@@ -512,83 +440,12 @@ class InputBox:
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-class Canvas:
-
-    def __init__(self, x, y, w, h, screen, color=(0, 0, 0), bgColor=(255, 255, 255)):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.screen = screen
-        self.color = color
-        self.bgColor = bgColor
-        self.paint = []
-        self.canvasEnabled = True
-        self.mouseHeld = False
-
-        self.canvasArea = pygame.Rect(self.x, self.y, self.w, self.h)
-
-    def draw(self):
-        if self.canvasEnabled == True:
-            try:
-                if len(self.paint) != 0:
-                    for thing in self.paint:
-                        if thing.left + 4 == self.MouseX and thing.top + 4 == self.MouseY:
-                            return
-                    self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
-                else:
-                    self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
-            except AttributeError:
-                self.paint.append(pygame.Rect(self.MouseX - 4, self.MouseY - 4, 8, 8))
-
-    def checkPress(self, event):
-        if self.canvasEnabled == True:
-            if self.canvasArea.collidepoint(pygame.mouse.get_pos()):
-                self.MousePos=pygame.mouse.get_pos()
-                self.MouseX=self.MousePos[0]
-                self.MouseY=self.MousePos[1]
-
-                if event.type == pygame.MOUSEBUTTONUP:
-                    self.mouseHeld = False
-                    return
-
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.mouseHeld = True
-                    self.draw()
-                    
-                if self.mouseHeld == True and event.type == pygame.MOUSEMOTION:
-                    self.draw()
-            else:
-                self.mouseHeld = False
-                return
-
-    def enableCanvas(self):
-        self.canvasEnabled = True
-    
-    def disableCanvas(self):
-        self.canvasEnabled = False
-
-    def clearCanvas(self):
-        self.paint = []
-
-    def render(self):
-        if self.canvasEnabled == True:
-            pygame.draw.rect(self.screen, self.bgColor, self.canvasArea)
-            if len(self.paint) == 0:
-                pass
-            else:
-                for thing in self.paint:
-                    pygame.draw.rect(self.screen, self.color, thing)
-
-    def changeValue(self, variable, value):
-        match variable:
-            case 'color':
-                self.color = value
-
 VideoFrame=pygame.Surface((644, 400))
 
 BigWindowSummaryX=window['bigWindow'].returnValue('x') + window['bigWindow'].returnValue('w') / 64
 BigWindowSummaryY=window['bigWindow'].returnValue('y', excludeTitleBar=True) + 116
+
+from UIElements.Canvas import Canvas
 
 PaintCanvas=Canvas(
     x=window['bigWindow'].returnValue('x') + 12, 

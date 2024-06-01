@@ -1,5 +1,10 @@
 import pygame
+from .Buttons import Button
 from platform import system
+import os
+
+ProgramDirectory=os.path.dirname(__file__,)
+SoundDirectory=os.path.join(ProgramDirectory, '..', 'Assets', 'Sound')
 
 if system() == "Windows":
     normalfontsize = 22
@@ -34,7 +39,6 @@ class Window:
         
         self.title = title
         self.titleSave = title
-        print(self.title)
 
         # Main Window
         self.window = pygame.Rect(x+2, y+32, w-4, h-34)
@@ -184,3 +188,106 @@ class Window:
 
     def enableCloseButton(self):
         self.closeButtonEnabled = True
+
+class ErrorMessage:
+
+    pygame.mixer.music.load(os.path.join(SoundDirectory, 'Chord.wav'))
+
+    def __init__(self, x, y, screen, title="", buttonLabel="OK", message="This is a warning message.", function="", functionArguments=[], wordWrap=False):
+        self.x = x
+        self.y = y
+        self.windowWeight=460
+        self.windowHeight=240
+        self.color = (0,0,0)
+        self.screen = screen
+        self.lineCharLimit = 38
+        
+        if wordWrap == True:
+            self.message = message.rstrip().split()
+            for word in self.message:
+                if len(word) >= self.lineCharLimit:
+                    raise NotImplementedError(f"The word '{word}' is longer or equal than {self.lineCharLimit} characters (it has {len(word)} characters)")
+
+            self.message.append('123456789012345678901234567890123456123456789012345678901234567890123456')
+        else:
+            self.message = message
+
+        self.fontstyle=pygame.font.SysFont(normalfontstyle,normalfontsize-2)
+
+        # 38 characters is the limit of one line
+        
+        self.lines = []
+        self.textToRender = []
+
+        if wordWrap == True:
+            self.aux = ""
+            self.auxiliarVariable = 0
+            
+            for i in range(0, len(self.message)+1):
+                if len(self.aux) + len(self.message[i - self.auxiliarVariable]) < self.lineCharLimit:
+                    self.aux += f"{self.message[i - self.auxiliarVariable]} "                   
+                else:
+                    self.lines.append(self.aux.rstrip())
+                    self.aux = ""
+                    self.auxiliarVariable+=1
+
+            self.lines.append(self.aux.rstrip())
+
+            if len(self.lines[-1]) == 0:
+                self.lines.pop(-1)
+        else:
+            for m in range(0, len(self.message), self.lineCharLimit):
+                self.lines.append(self.message[m: m+self.lineCharLimit])
+
+        for item in self.lines:
+            self.textToRender.append(self.fontstyle.render(item, True, self.color))
+
+        self.ErrorMessageWindow = Window(self.x, self.y, self.windowWeight, self.windowHeight, screen, title)
+        self.ErrorMessageButton = Button(x=self.ErrorMessageWindow.returnValue('middleX'), y=self.ErrorMessageWindow.returnValue('y') + self.windowHeight - 32, screen=self.screen, label=buttonLabel, holdButtonifPressed=True, function=function, functionArguments=functionArguments, bold=True)
+        self.WarningShown = False
+        self.SoundPlayed = False
+
+    def checkIfOpen(self):
+        return self.ErrorMessageWindow.checkIfOpen()
+
+    def checkPress(self, event):
+        if self.WarningShown == True:
+            self.ErrorMessageWindow.checkPress(event)
+            self.ErrorMessageButton.checkPress(event)
+
+            if self.ErrorMessageButton.checkPress(event) == True:
+                self.WarningShown = False
+                self.ErrorMessageButton.changeToggle(False)
+
+    def render(self):
+        if self.WarningShown == True:
+            self.ErrorMessageWindow.render()
+            self.ErrorMessageButton.render()
+            TextX=self.ErrorMessageWindow.returnValue('x')+94
+            TextY=self.ErrorMessageWindow.returnValue('y')+42
+
+            self.separation = 0
+
+            for item in self.textToRender:
+                self.screen.blit(item, (TextX, TextY+self.separation)) 
+                self.separation+=24
+                
+            self.screen.blit(Asset["Icon-WarningIcon"], (self.x+16, self.y+self.y/3))
+        
+            if self.SoundPlayed == False:
+                pygame.mixer.music.play()
+                self.SoundPlayed = True
+        else:
+            self.ErrorMessageWindow.closeWindow()
+    
+    def openWindow(self):
+        self.ErrorMessageWindow.openWindow()
+        self.WarningShown = True
+    
+    def closeWindow(self):
+        self.ErrorMessageWindow.closeWindow()
+        self.WarningShown = False
+        self.SoundPlayed = False
+    
+    def isWarningOpen(self):
+        return self.WarningShown
