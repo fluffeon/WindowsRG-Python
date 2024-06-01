@@ -1,3 +1,5 @@
+import json
+
 translation = {
 
     # Desktop and Explorer
@@ -149,3 +151,8 @@ translation = {
     'Warning-MyDocumentsCrash': "explorer.exe has performed an illegal operation, and will now be closed.",
     
 }
+
+Name=input("Name of the translation: ")
+
+with open(f"{Name}.json", "w") as outfile: 
+    json.dump(translation, outfile)
