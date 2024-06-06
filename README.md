@@ -22,5 +22,3 @@ Contributors / Special Thanks
 -----------------------------
 - SabahatUsman0 (Paint)
 - skrx (Input Box)
-
-# Final Assignment of Python course in IITA
